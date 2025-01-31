@@ -11,6 +11,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Interactable/Plant/Plant01.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -53,6 +54,11 @@ AReapTheUndeadCharacter::AReapTheUndeadCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+}
+
+void AReapTheUndeadCharacter::SetInteractableObject(AInteractableObjects* _AInteractableObjects)
+{
+	InteractableObject = _AInteractableObjects;
 }
 
 void AReapTheUndeadCharacter::BeginPlay()
@@ -114,10 +120,9 @@ void AReapTheUndeadCharacter::Interact(const FInputActionValue& Value)
 {
 	if (InteractableObject)
 	{
-		InteractableObject->InteractableFunction();
+		InteractableObject->InteractFunction();
 	}
 }
-
 
 void AReapTheUndeadCharacter::Move(const FInputActionValue& Value)
 {
