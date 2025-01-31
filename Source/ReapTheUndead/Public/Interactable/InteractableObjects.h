@@ -4,7 +4,10 @@
 #include "GameFramework/Actor.h"
 #include "InteractableObjects.generated.h"
 
+struct FInputActionValue;
 class UBoxComponent;
+
+DECLARE_DELEGATE(FOnInteractDelegate);
 
 UCLASS()
 class REAPTHEUNDEAD_API AInteractableObjects : public AActor
@@ -13,10 +16,16 @@ class REAPTHEUNDEAD_API AInteractableObjects : public AActor
 	
 public:	
 	AInteractableObjects();
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent);
 	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION()
+	void InteractableFunction();
 
 protected:
 	virtual void BeginPlay() override;
+
+	virtual void InteractObject();
 	
 	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* AnyOtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

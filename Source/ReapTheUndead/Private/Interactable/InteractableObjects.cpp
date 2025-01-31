@@ -1,4 +1,6 @@
 #include "Interactable/InteractableObjects.h"
+
+#include "InputActionValue.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -17,11 +19,20 @@ AInteractableObjects::AInteractableObjects()
 
 }
 
+void AInteractableObjects::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
+{
+}
+
 void AInteractableObjects::BeginPlay()
 {
 	Super::BeginPlay();
 	
 	PlayerController = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+}
+
+void AInteractableObjects::InteractObject()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("print"));
 }
 
 
@@ -39,9 +50,7 @@ void AInteractableObjects::OnBeginOverlap(
 	bool bFromSweep,
 	const FHitResult& SweepResult)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("1111111111"));
 	if (PlayerController != OtherActor) return;
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("278575785"));
 	isPlayerTrigger = true;
 
 	Objectmesh->SetOverlayMaterial(MaterialOverlay);
@@ -55,3 +64,9 @@ void AInteractableObjects::OnEndOverlap(
 {
 	
 }
+
+void AInteractableObjects::InteractableFunction()
+{
+	InteractObject();
+}
+
