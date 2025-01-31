@@ -55,8 +55,8 @@ class AReapTheUndeadCharacter : public ACharacter
 
 public:
 	AReapTheUndeadCharacter();
-	
 
+	void SetInteractableObject(AInteractableObjects* _AInteractableObjects);
 protected:
 
 	/** Called for movement input */

@@ -51,8 +51,7 @@ void APlantingSystem::SwitchMesh(int _indexMesh)
 	{
 		UE_LOG(LogTemp, Error, TEXT("le plantMesh est null"));
 	}
-
-	if (_indexMesh == PlantsMesh.Max() - 1)
+	if (_indexMesh == PlantsMesh.Max() - 2)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("end of evolution"));
 		GetWorld()->GetTimerManager().ClearTimer(PlantingRateTimerHandle);

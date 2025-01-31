@@ -1,6 +1,5 @@
 #include "Interactable/InteractableObjects.h"
 
-#include "InputActionValue.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -42,6 +41,11 @@ void AInteractableObjects::Tick(float DeltaTime)
 
 }
 
+void AInteractableObjects::InteractFunction()
+{
+	InteractObject();
+}
+
 void AInteractableObjects::OnBeginOverlap(
 	UPrimitiveComponent* OverlappedComponent,
 	AActor* OtherActor,
@@ -63,10 +67,5 @@ void AInteractableObjects::OnEndOverlap(
 	int32 OtherBodyIndex)
 {
 	
-}
-
-void AInteractableObjects::InteractableFunction()
-{
-	InteractObject();
 }
 
