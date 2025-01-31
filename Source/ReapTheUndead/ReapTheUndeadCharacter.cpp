@@ -1,6 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "ReapTheUndeadCharacter.h"
+#include "Interactable/InteractableObjects.h"
 #include "Engine/LocalPlayer.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -58,6 +59,19 @@ void AReapTheUndeadCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;  // Le personnage qui est le propriétaire de l'objet
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	// Spawn l'objet de type AInteractableObjectInstance
+	AInteractableObjects* InteractableObj = GetWorld()->SpawnActor<AInteractableObjects>(InteractableObjectClass, FVector(0.f, 0.f, 0.f), FRotator::ZeroRotator, SpawnParams);
+
+	if (InteractableObj)
+	{
+		InteractableObject = InteractableObj;
+		UE_LOG(LogTemp, Warning, TEXT("Objet interactable spawné!"));
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -86,12 +100,24 @@ void AReapTheUndeadCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AReapTheUndeadCharacter::Look);
+
+		// Interact
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AReapTheUndeadCharacter::Interact);
 	}
 	else
 	{
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
 }
+
+void AReapTheUndeadCharacter::Interact(const FInputActionValue& Value)
+{
+	if (InteractableObject)
+	{
+		InteractableObject->InteractableFunction();
+	}
+}
+
 
 void AReapTheUndeadCharacter::Move(const FInputActionValue& Value)
 {
