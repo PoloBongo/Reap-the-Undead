@@ -4,6 +4,9 @@
 #include "GameFramework/Actor.h"
 #include "PlantingSystem.generated.h"
 
+class UNiagaraComponent;
+class UNiagaraSystem;
+
 UCLASS()
 class REAPTHEUNDEAD_API APlantingSystem : public AActor
 {
@@ -27,10 +30,25 @@ private:
 	TArray<UStaticMesh*> PlantsMesh;
 	
 	FTimerHandle PlantingRateTimerHandle;
+	FTimerHandle FirstPlantingRateTimerHandle;
 	
 	UPROPERTY(EditAnywhere, Category="Plant")
 	float EvolutionRate = 3.f;
 
 	UPROPERTY(EditAnywhere, Category="Plant")
+	float FirstEvolutionRate = 5.f;
+
+	UPROPERTY(EditAnywhere, Category="Plant")
 	int IndexActualMesh = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Niagara Effect", meta=(AllowPrivateAccess="true"))
+	UNiagaraSystem* EvolutionEffect;
+
+	UFUNCTION()
+	void OnNiagaraFinished(UNiagaraComponent* NiagaraComponent);
+	
+	UFUNCTION()
+	void InitFirstMeshEvolve();
+
+	bool AntiSpawnNiagaraForFirstUsage = false;
 };

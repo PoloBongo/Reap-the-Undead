@@ -67,16 +67,14 @@ void AReapTheUndeadCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	FActorSpawnParameters SpawnParams;
-	SpawnParams.Owner = this;  // Le personnage qui est le propriétaire de l'objet
+	SpawnParams.Owner = this;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	// Spawn l'objet de type AInteractableObjectInstance
 	AInteractableObjects* InteractableObj = GetWorld()->SpawnActor<AInteractableObjects>(InteractableObjectClass, FVector(0.f, 0.f, 0.f), FRotator::ZeroRotator, SpawnParams);
 
 	if (InteractableObj)
 	{
 		InteractableObject = InteractableObj;
-		UE_LOG(LogTemp, Warning, TEXT("Objet interactable spawné!"));
 	}
 }
 

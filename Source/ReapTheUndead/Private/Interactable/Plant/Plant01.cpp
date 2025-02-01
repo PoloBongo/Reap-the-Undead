@@ -5,6 +5,8 @@
 
 void APlant01::InteractObject()
 {
+	if (isAlreadyPlanted) return;
+	
 	Super::InteractObject();
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("print plant01"));
 	if (PlantingSystem && LocationSpawnObject)
@@ -14,6 +16,8 @@ void APlant01::InteractObject()
 		
 		GetWorld()->SpawnActor<APlantingSystem>(PlantingSystem, SpawnLocation, SpawnRotation);
 	}
+
+	isAlreadyPlanted = true;
 }
 
 void APlant01::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
