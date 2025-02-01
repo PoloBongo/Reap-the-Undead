@@ -43,7 +43,10 @@ void AInteractableObjects::Tick(float DeltaTime)
 
 void AInteractableObjects::InteractFunction()
 {
-	InteractObject();
+	if (isPlayerTrigger)
+	{
+		InteractObject();
+	}
 }
 
 void AInteractableObjects::OnBeginOverlap(
@@ -66,6 +69,8 @@ void AInteractableObjects::OnEndOverlap(
 	UPrimitiveComponent* AnyOtherComponent,
 	int32 OtherBodyIndex)
 {
-	
+	isPlayerTrigger = false;
+
+	Objectmesh->SetOverlayMaterial(nullptr);
 }
 
