@@ -16,7 +16,7 @@ class REAPTHEUNDEAD_API APlantManager : public AInteractableObjects
 	
 protected:
 	UPROPERTY(EditAnywhere, Category="Planting System")
-	TSubclassOf<APlantingSystem> PlantingSystem;
+	TSubclassOf<APlantingSystem> PlantingSystemClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Target Point", meta=(AllowPrivateAccess="true"))
 	ATargetPoint* LocationSpawnObject;

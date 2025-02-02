@@ -20,4 +20,6 @@ protected:
 
 private:
 	bool isAlreadyPlanted = false;
+	APlantingSystem* PlantingSystem;
+	UStaticMeshComponent* ActualEvolveMesh;
 };
