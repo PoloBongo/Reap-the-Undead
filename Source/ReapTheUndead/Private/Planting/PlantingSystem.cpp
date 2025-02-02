@@ -25,8 +25,8 @@ void APlantingSystem::Tick(float DeltaTime)
 
 void APlantingSystem::StartPlanting()
 {
-	GetWorldTimerManager().SetTimer(PlantingRateTimerHandle, this, &APlantingSystem::EvolutionPlanting, EvolutionRate, true);
 	GetWorldTimerManager().SetTimer(FirstPlantingRateTimerHandle, this, &APlantingSystem::InitFirstMeshEvolve, FirstEvolutionRate, false);
+	GetWorldTimerManager().SetTimer(PlantingRateTimerHandle, this, &APlantingSystem::EvolutionPlanting, EvolutionRate, true);
 }
 
 void APlantingSystem::EvolutionPlanting()
