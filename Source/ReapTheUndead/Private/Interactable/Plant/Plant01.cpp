@@ -1,11 +1,30 @@
 #include "Interactable/Plant/Plant01.h"
 
+#include "Blueprint/UserWidget.h"
+#include "Components/WidgetComponent.h"
 #include "Planting/PlantingSystem.h"
 #include "Engine/TargetPoint.h"
+#include "Kismet/KismetMathLibrary.h"
+
+void APlant01::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	// if (UIUserInteract && !IsAlreadyPlanted)
+	// {
+	// 	FVector PlayerLocation = PlayerController->GetActorLocation();
+	// 	FVector PlantLocation = this->GetActorLocation();
+	// 	if (FVector::Distance(PlayerLocation, PlantLocation) < 700.f)
+	// 	{
+	// 		FRotator rotation = UKismetMathLibrary::FindLookAtRotation(PlayerLocation, PlantLocation);
+	// 		FRotator newRotation(180.f, 180.f, rotation.Yaw);
+	// 		UIUserInteractComponent->SetWorldRotation(newRotation);
+	// 	}
+	// }
+}
 
 void APlant01::InteractObject()
 {
-	if (isAlreadyPlanted) return;
+	if (IsAlreadyPlanted) return;
 	
 	Super::InteractObject();
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("print plant01"));
@@ -17,7 +36,8 @@ void APlant01::InteractObject()
 		PlantingSystem = GetWorld()->SpawnActor<APlantingSystem>(PlantingSystemClass, SpawnLocation, SpawnRotation);
 	}
 
-	isAlreadyPlanted = true;
+	IsAlreadyPlanted = true;
+	if(UIUserInteract && IsAlreadyPlanted) UIUserInteract->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void APlant01::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -26,7 +46,7 @@ void APlant01::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 	Super::OnBeginOverlap(OverlappedComponent, OtherActor, AnyOtherComponent, OtherBodyIndex, bFromSweep, SweepResult);
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("trigger plant01"));
 	
-	if (isAlreadyPlanted)
+	if (IsAlreadyPlanted)
 	{
 		if (!ActualEvolveMesh)
 		{
