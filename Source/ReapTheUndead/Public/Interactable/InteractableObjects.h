@@ -7,6 +7,7 @@
 class UWidgetComponent;
 struct FInputActionValue;
 class UBoxComponent;
+class UUserWidget;
 
 DECLARE_DELEGATE(FOnInteractDelegate);
 
@@ -21,7 +22,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void InteractFunction();
-	
 protected:
 	virtual void BeginPlay() override;
 
@@ -35,6 +35,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Material Overlay", meta = (AllowPrivateAccess = "true"))
 	class UMaterialInterface* MaterialOverlay;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI Interact", meta = (AllowPrivateAccess = "true"))
+	class UUserWidget* UIUserInteract;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI Interact", meta = (AllowPrivateAccess = "true"))
+	class UWidgetComponent* UIUserInteractComponent;
+
+	APawn* PlayerController;
 private:
 	bool isPlayerTrigger = false;
 
@@ -43,6 +50,4 @@ private:
 
 	UPROPERTY(visibleAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UBoxComponent* BoxComponent;
-
-	APawn* PlayerController;
 };
