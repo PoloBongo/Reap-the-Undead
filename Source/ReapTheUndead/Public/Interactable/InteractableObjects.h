@@ -4,6 +4,7 @@
 #include "GameFramework/Actor.h"
 #include "InteractableObjects.generated.h"
 
+class UWidgetComponent;
 struct FInputActionValue;
 class UBoxComponent;
 
@@ -20,6 +21,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void InteractFunction();
+	
 protected:
 	virtual void BeginPlay() override;
 
@@ -32,6 +34,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Material Overlay", meta = (AllowPrivateAccess = "true"))
 	class UMaterialInterface* MaterialOverlay;
+
 private:
 	bool isPlayerTrigger = false;
 

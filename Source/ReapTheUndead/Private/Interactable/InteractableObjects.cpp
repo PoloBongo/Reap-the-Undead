@@ -1,5 +1,4 @@
 #include "Interactable/InteractableObjects.h"
-
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -15,7 +14,6 @@ AInteractableObjects::AInteractableObjects()
 	
 	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AInteractableObjects::OnBeginOverlap);
 	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &AInteractableObjects::OnEndOverlap);
-
 }
 
 void AInteractableObjects::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)

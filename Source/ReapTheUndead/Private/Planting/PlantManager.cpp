@@ -1,5 +1,4 @@
 #include "Planting/PlantManager.h"
-
 #include "ReapTheUndead/ReapTheUndeadCharacter.h"
 
 void APlantManager::InteractObject() {}
