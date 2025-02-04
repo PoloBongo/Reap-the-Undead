@@ -2,18 +2,15 @@
 
 #include "CoreMinimal.h"
 #include "Planting/PlantManager.h"
-#include "Plant01.generated.h"
+#include "Plants.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class REAPTHEUNDEAD_API APlant01 : public APlantManager
+class REAPTHEUNDEAD_API APlants : public APlantManager
 {
 	GENERATED_BODY()
-
-public:
-	virtual void Tick(float DeltaTime) override;
 	
 protected:
 	virtual void InteractObject() override;

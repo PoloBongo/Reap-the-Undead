@@ -1,28 +1,10 @@
-#include "Interactable/Plant/Plant01.h"
+#include "Interactable/Plant/Plants.h"
 
 #include "Blueprint/UserWidget.h"
-#include "Components/WidgetComponent.h"
 #include "Planting/PlantingSystem.h"
 #include "Engine/TargetPoint.h"
-#include "Kismet/KismetMathLibrary.h"
 
-void APlant01::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-	// if (UIUserInteract && !IsAlreadyPlanted)
-	// {
-	// 	FVector PlayerLocation = PlayerController->GetActorLocation();
-	// 	FVector PlantLocation = this->GetActorLocation();
-	// 	if (FVector::Distance(PlayerLocation, PlantLocation) < 700.f)
-	// 	{
-	// 		FRotator rotation = UKismetMathLibrary::FindLookAtRotation(PlayerLocation, PlantLocation);
-	// 		FRotator newRotation(180.f, 180.f, rotation.Yaw);
-	// 		UIUserInteractComponent->SetWorldRotation(newRotation);
-	// 	}
-	// }
-}
-
-void APlant01::InteractObject()
+void APlants::InteractObject()
 {
 	if (IsAlreadyPlanted) return;
 	
@@ -40,7 +22,7 @@ void APlant01::InteractObject()
 	if(UIUserInteract && IsAlreadyPlanted) UIUserInteract->SetVisibility(ESlateVisibility::Hidden);
 }
 
-void APlant01::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+void APlants::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* AnyOtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	Super::OnBeginOverlap(OverlappedComponent, OtherActor, AnyOtherComponent, OtherBodyIndex, bFromSweep, SweepResult);
@@ -59,7 +41,7 @@ void APlant01::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 	}
 }
 
-void APlant01::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+void APlants::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* AnyOtherComponent, int32 OtherBodyIndex)
 {
 	Super::OnEndOverlap(OverlappedComponent, OtherActor, AnyOtherComponent, OtherBodyIndex);
