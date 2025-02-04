@@ -3,10 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InputActionValue.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "ReapTheUndeadCharacter.generated.h"
 
+class AInventorySystem;
 class AInteractableObjects;
 class USpringArmComponent;
 class UCameraComponent;
@@ -48,10 +50,20 @@ class AReapTheUndeadCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* InteractAction;
 
-	UPROPERTY(EditAnywhere, Category="Interactable Objects")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* InventoryAction;
+
+	UPROPERTY(EditAnywhere, Category="Instance")
 	TSubclassOf<AInteractableObjects> InteractableObjectClass;
+
+	UPROPERTY(EditAnywhere, Category="Instance")
+	TSubclassOf<AInventorySystem> InventorySystemClass;
 	
 	AInteractableObjects* InteractableObject;
+	AInventorySystem* InventorySystem;
+
+	void InstanceInteractableObject(FActorSpawnParameters SpawnParams);
+	void InstanceInventorySystem(FActorSpawnParameters SpawnParams);
 
 public:
 	AReapTheUndeadCharacter();
@@ -66,6 +78,8 @@ protected:
 	void Look(const FInputActionValue& Value);
 
 	void Interact(const FInputActionValue& Value);
+
+	void OpenInventory(const FInputActionValue& Value);
 			
 
 protected:

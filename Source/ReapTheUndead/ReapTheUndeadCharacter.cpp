@@ -11,7 +11,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
-#include "Interactable/Plant/Plant01.h"
+#include "Inventory/InventorySystem.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -70,11 +70,23 @@ void AReapTheUndeadCharacter::BeginPlay()
 	SpawnParams.Owner = this;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	AInteractableObjects* InteractableObj = GetWorld()->SpawnActor<AInteractableObjects>(InteractableObjectClass, FVector(0.f, 0.f, 0.f), FRotator::ZeroRotator, SpawnParams);
+	InstanceInteractableObject(SpawnParams);
+	InstanceInventorySystem(SpawnParams);
+}
 
-	if (InteractableObj)
+void AReapTheUndeadCharacter::InstanceInteractableObject(FActorSpawnParameters SpawnParams)
+{
+	if (AInteractableObjects* InteractableObj = GetWorld()->SpawnActor<AInteractableObjects>(InteractableObjectClass, FVector(0.f, 0.f, 0.f), FRotator::ZeroRotator, SpawnParams))
 	{
 		InteractableObject = InteractableObj;
+	}
+}
+
+void AReapTheUndeadCharacter::InstanceInventorySystem(FActorSpawnParameters SpawnParams)
+{
+	if (AInventorySystem* Inv = GetWorld()->SpawnActor<AInventorySystem>(InventorySystemClass, FVector(0.f, 0.f, 0.f), FRotator::ZeroRotator, SpawnParams))
+	{
+		InventorySystem = Inv;
 	}
 }
 
@@ -107,6 +119,9 @@ void AReapTheUndeadCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 
 		// Interact
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AReapTheUndeadCharacter::Interact);
+
+		// Inventory
+		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AReapTheUndeadCharacter::OpenInventory);
 	}
 	else
 	{
@@ -119,6 +134,14 @@ void AReapTheUndeadCharacter::Interact(const FInputActionValue& Value)
 	if (InteractableObject)
 	{
 		InteractableObject->InteractFunction();
+	}
+}
+
+void AReapTheUndeadCharacter::OpenInventory(const FInputActionValue& Value)
+{
+	if (InventorySystem)
+	{
+		InventorySystem->InteractInventory();
 	}
 }
 
