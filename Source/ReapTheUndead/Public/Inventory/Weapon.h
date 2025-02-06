@@ -16,9 +16,9 @@ public:
 	AWeapon();
 	AWeapon(int ID, EItemType Type, int Quantity, float Damage);
 
+	void UseWeapon();
 private:
 	EItemType ItemType;
 	float Damage;
 	
-	void UseWeapon();
 };

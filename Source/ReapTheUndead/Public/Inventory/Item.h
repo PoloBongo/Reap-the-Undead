@@ -23,9 +23,9 @@ public:
 	AItem();
 	AItem(int ID, EItemType Type, int Quantity, EItemUsable Usable);
 
+	void UseItem();
 private:
 	EItemType ItemType;
 	EItemUsable ItemUsable;
 	
-	void UseItem();
 };

@@ -4,6 +4,8 @@
 #include "GameFramework/Actor.h"
 #include "InventorySystem.generated.h"
 
+class UBorder;
+class UButton;
 class UHorizontalBox;
 
 UENUM()
@@ -23,6 +25,7 @@ public:
 	AInventorySystem();
 	virtual void Tick(float DeltaTime) override;
 	void InteractInventory();
+	void UseSlots(int Index);
 
 protected:
 	virtual void BeginPlay() override;
@@ -45,5 +48,16 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
 	UHorizontalBox* HorizontalBox;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
+	UBorder* InventoryBorder;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
+	TArray<UButton*> ButtonsSlots;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
+	TMap<int, UClass*> InventorySlots;
+
+	void UpdateInventorySlotImage();
+	
 	bool IsOpen = false;
 };

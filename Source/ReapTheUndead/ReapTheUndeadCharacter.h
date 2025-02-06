@@ -8,13 +8,13 @@
 #include "Logging/LogMacros.h"
 #include "ReapTheUndeadCharacter.generated.h"
 
+struct FInputActionInstance;
 class AInventorySystem;
 class AInteractableObjects;
 class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
-struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -53,6 +53,9 @@ class AReapTheUndeadCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* InventoryAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* SlotAction;
+
 	UPROPERTY(EditAnywhere, Category="Instance")
 	TSubclassOf<AInteractableObjects> InteractableObjectClass;
 
@@ -80,6 +83,8 @@ protected:
 	void Interact(const FInputActionValue& Value);
 
 	void OpenInventory(const FInputActionValue& Value);
+	
+	void Slot1(const FInputActionValue& Value);
 			
 
 protected:
