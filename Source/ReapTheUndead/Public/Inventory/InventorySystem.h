@@ -60,4 +60,7 @@ private:
 	void UpdateInventorySlotImage();
 	
 	bool IsOpen = false;
+
+	UFUNCTION(BlueprintCallable, Category = "Custom Function")
+	void CloseInventory();
 };

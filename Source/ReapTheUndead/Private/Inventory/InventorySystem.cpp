@@ -24,9 +24,26 @@ void AInventorySystem::Tick(float DeltaTime)
 
 void AInventorySystem::InteractInventory()
 {
-	if (!InventoryWidget && !InventoryBorder) return;
-	IsOpen ? InventoryBorder->SetVisibility(ESlateVisibility::Hidden) : InventoryBorder->SetVisibility(ESlateVisibility::Visible);
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	if (!InventoryWidget && !InventoryBorder && !PlayerController) return;
+
+	if (IsOpen)
+	{
+		PlayerController->SetInputMode(FInputModeGameOnly());
+		InventoryBorder->SetVisibility(ESlateVisibility::Hidden);
+	}
+	else
+	{
+		PlayerController->SetInputMode(FInputModeUIOnly());
+		InventoryBorder->SetVisibility(ESlateVisibility::Visible);
+	}
+	PlayerController->SetShowMouseCursor(!IsOpen);
 	IsOpen = !IsOpen;
+}
+
+void AInventorySystem::CloseInventory()
+{
+	InteractInventory();
 }
 
 EItemType AInventorySystem::GetItemType(const EItemType ItemType)
@@ -41,7 +58,7 @@ void AInventorySystem::AddObjectInInventory(UObject* Object)
 
 void AInventorySystem::UpdateInventorySlotImage()
 {
-	// UButton* Button = ButtonsSlots[0];
+	UButton* Button = ButtonsSlots[0];
 	// if (!Button) return;
 	//
 	// FButtonStyle ButtonStyle = Button->WidgetStyle;
