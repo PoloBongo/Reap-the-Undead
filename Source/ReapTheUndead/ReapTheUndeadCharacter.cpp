@@ -122,6 +122,7 @@ void AReapTheUndeadCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 
 		// Inventory
 		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AReapTheUndeadCharacter::OpenInventory);
+		EnhancedInputComponent->BindAction(SlotAction, ETriggerEvent::Started, this, &AReapTheUndeadCharacter::Slot1);
 	}
 	else
 	{
@@ -142,6 +143,14 @@ void AReapTheUndeadCharacter::OpenInventory(const FInputActionValue& Value)
 	if (InventorySystem)
 	{
 		InventorySystem->InteractInventory();
+	}
+}
+
+void AReapTheUndeadCharacter::Slot1(const FInputActionValue& Value)
+{
+	if (InventorySystem)
+	{
+		InventorySystem->UseSlots(0);
 	}
 }
 
