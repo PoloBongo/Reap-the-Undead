@@ -4,7 +4,7 @@
 #include "Inventory/InventorySystem.h"
 #include "Item.generated.h"
 
-UENUM()
+UENUM(BlueprintType)
 enum EItemUsable
 {
 	Ed_U UMETA(DisplayName="Usable"),
@@ -21,11 +21,13 @@ class REAPTHEUNDEAD_API AItem : public AInventorySystem
 
 public:
 	AItem();
-	AItem(int ID, EItemType Type, int Quantity, EItemUsable Usable);
 
 	void UseItem();
 private:
-	EItemType ItemType;
-	EItemUsable ItemUsable;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Constructor", meta=(AllowPrivateAccess="true"))
+	TEnumAsByte<EItemType> ItemType;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Constructor", meta=(AllowPrivateAccess="true"))
+	TEnumAsByte<EItemUsable> ItemUsable;
 	
 };

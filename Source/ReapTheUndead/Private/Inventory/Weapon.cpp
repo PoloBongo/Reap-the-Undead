@@ -4,7 +4,7 @@ AWeapon::AWeapon() {}
 
 AWeapon::AWeapon(int ID, EItemType Type, int Quantity, float Damage)
 {
-	AddObjectInInventory(this);
+	AddObjectInInventory(this->GetClass());
 }
 
 void AWeapon::UseWeapon()
