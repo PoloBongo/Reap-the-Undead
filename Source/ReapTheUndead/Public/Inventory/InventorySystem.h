@@ -4,6 +4,10 @@
 #include "GameFramework/Actor.h"
 #include "InventorySystem.generated.h"
 
+class AItem;
+class UWrapBox;
+class UInventoryDataItems;
+class UImage;
 class UBorder;
 class UButton;
 class UHorizontalBox;
@@ -31,22 +35,30 @@ protected:
 	virtual void BeginPlay() override;
 	static EItemType GetItemType(EItemType ItemType);
 
-	void AddObjectInInventory(UObject* Object);
+	void AddObjectInInventory(UClass* Object);
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Constructor")
 	int ID;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Constructor")
 	int Quantity;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Image")
 	UTexture* Image;
 	
 private:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true"))
-	TArray<UObject*> Objects;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
+	TArray<UClass*> Classes;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
+	TArray<UInventoryDataItems*> DataAssets;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
 	UUserWidget* InventoryWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
-	UHorizontalBox* HorizontalBox;
+	UWrapBox* InventoryWrapBox;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
+	UImage* ImageBtnCloseInventory;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
 	UBorder* InventoryBorder;
@@ -57,7 +69,18 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
 	TMap<int, UClass*> InventorySlots;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true"))
+	TMap<UClass*, AItem*> InstanciatedItems;
+
 	void UpdateInventorySlotImage();
 	
 	bool IsOpen = false;
+
+	UFUNCTION(BlueprintCallable, Category = "Custom Function")
+	void CloseInventory();
+
+	UFUNCTION()
+	void OnItemClicked(const FGeometry& MyGeometry, const FPointerEvent& MouseEvent);
+
+	void LoadInventory();
 };
