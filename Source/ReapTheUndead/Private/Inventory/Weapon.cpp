@@ -1,10 +1,16 @@
 #include "Inventory/Weapon.h"
 
-AWeapon::AWeapon() {}
+#include "Inventory/DataAsset/InventoryDataItems.h"
 
-AWeapon::AWeapon(int ID, EItemType Type, int Quantity, float Damage)
+AWeapon::AWeapon(): ItemType(Ed_W), Damage(0), DataAsset(nullptr) {}
+
+void AWeapon::BeginPlay()
 {
-	AddObjectInInventory(this->GetClass());
+	if (DataAsset)
+	{
+		ID = DataAsset->ID;
+		Quantity = DataAsset->Quantity;
+	}
 }
 
 void AWeapon::UseWeapon()
@@ -13,4 +19,7 @@ void AWeapon::UseWeapon()
 	UE_LOG(LogTemp, Error, TEXT("Type : %d"), ItemType);
 	UE_LOG(LogTemp, Error, TEXT("Quantity : %d"), Quantity);
 	UE_LOG(LogTemp, Error, TEXT("Damage : %f"), Damage);
+
+	if (Quantity <= 0) return;
+	Quantity--;
 }

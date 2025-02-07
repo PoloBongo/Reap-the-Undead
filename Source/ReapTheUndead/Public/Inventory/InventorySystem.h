@@ -35,13 +35,13 @@ protected:
 	virtual void BeginPlay() override;
 	static EItemType GetItemType(EItemType ItemType);
 
-	void AddObjectInInventory(UClass* Object);
+	UFUNCTION(BlueprintCallable, Category = "Custom Function")
+	void AddItem(UInventoryDataItems* ItemData);
+	UFUNCTION(BlueprintCallable, Category = "Custom Function")
+	void RemoveItem(UInventoryDataItems* ItemData);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Constructor")
 	int ID;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Constructor")
 	int Quantity;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Image")
 	UTexture* Image;
 	
 private:
@@ -75,6 +75,7 @@ private:
 	void UpdateInventorySlotImage();
 	
 	bool IsOpen = false;
+	bool DoublonFound = false;
 
 	UFUNCTION(BlueprintCallable, Category = "Custom Function")
 	void CloseInventory();

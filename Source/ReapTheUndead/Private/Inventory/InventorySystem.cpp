@@ -61,10 +61,94 @@ void AInventorySystem::LoadInventory()
 	}
 }
 
-
 void AInventorySystem::OnItemClicked(const FGeometry& MyGeometry, const FPointerEvent& MouseEvent)
 {
 	UE_LOG(LogTemp, Warning, TEXT("image cliqué! %s"), *this->GetName());
+}
+
+void AInventorySystem::AddItem(UInventoryDataItems* ItemData)
+{
+	if (!InventoryWrapBox || !ItemData) return;
+
+	for (int32 i = 0; i < InventoryWrapBox->GetChildrenCount(); ++i)
+	{
+		UImage* ItemImage = Cast<UImage>(InventoryWrapBox->GetChildAt(i));
+		if (ItemImage)
+		{
+			UTexture* ItemImageTexture = Cast<UTexture>(ItemImage->Brush.GetResourceObject());
+			if (ItemImageTexture)
+			{
+				if (ItemImageTexture == ItemData->Image)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Doublon trouvé. +1 manuelo"));
+					ItemData->Quantity++;
+					DoublonFound = true;
+					break;
+				}
+			}
+		}
+	}
+
+	if (!DoublonFound)
+	{
+		UImage* ItemImage = NewObject<UImage>(this);
+
+		if (UTexture* BaseTexture = ItemData->Image)
+		{
+			UTexture2D* ItemTexture2D = Cast<UTexture2D>(BaseTexture);
+			if (ItemTexture2D)
+			{
+				FSlateBrush NewImageBrush;
+				NewImageBrush.SetResourceObject(ItemTexture2D);
+				ItemImage->SetBrush(NewImageBrush);
+				FVector2D ImageSize(100.f, 400.f);
+				ItemImage->SetBrushSize(ImageSize);
+				InventoryWrapBox->AddChildToWrapBox(ItemImage);
+				ItemImage->OnMouseButtonDownEvent.BindUFunction(this, FName("OnItemClicked"));
+
+				UE_LOG(LogTemp, Warning, TEXT("Item ajouté à l'inventaire: %s"), *ItemData->ItemClass->GetName());
+				Classes.Add(ItemData->ItemClass);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Le cast vers UTexture2D a échoué pour: %s"), *ItemData->ItemClass->GetName());
+			}
+		}
+	}
+	DoublonFound = false;
+}
+
+void AInventorySystem::RemoveItem(UInventoryDataItems* ItemData)
+{
+	if (!InventoryWrapBox || !ItemData) return;
+
+	for (int32 i = 0; i < InventoryWrapBox->GetChildrenCount(); ++i)
+	{
+		UImage* ItemImage = Cast<UImage>(InventoryWrapBox->GetChildAt(i));
+		if (ItemImage)
+		{
+			if (UTexture* BaseTexture = ItemData->Image)
+			{
+				UTexture2D* ItemTexture2D = Cast<UTexture2D>(BaseTexture);
+				if (ItemTexture2D && ItemImage->GetBrush().GetResourceObject() == ItemTexture2D)
+				{
+					if (ItemData->Quantity <= 1)
+					{
+						ItemImage->RemoveFromParent();
+						UE_LOG(LogTemp, Warning, TEXT("Item supprimé de l'inventaire: %s"), *ItemData->ItemClass->GetName());
+						Classes.Remove(ItemData->ItemClass);
+						ItemData->Quantity = 0;
+					}
+					else
+					{
+						ItemData->Quantity--;
+						UE_LOG(LogTemp, Warning, TEXT("Item pas supprimé mais -1 zbi: %s"), *ItemData->ItemClass->GetName());
+					}
+					break;
+				}
+			}
+		}
+	}
 }
 
 void AInventorySystem::Tick(float DeltaTime)
@@ -102,11 +186,6 @@ void AInventorySystem::CloseInventory()
 EItemType AInventorySystem::GetItemType(const EItemType ItemType)
 {
 	return ItemType;
-}
-
-void AInventorySystem::AddObjectInInventory(UClass* Object)
-{
-	Classes.Add(Object);
 }
 
 void AInventorySystem::UpdateInventorySlotImage()
