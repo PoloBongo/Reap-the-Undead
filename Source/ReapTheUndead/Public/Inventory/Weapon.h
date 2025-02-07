@@ -14,11 +14,16 @@ class REAPTHEUNDEAD_API AWeapon : public AInventorySystem
 
 public:
 	AWeapon();
-	AWeapon(int ID, EItemType Type, int Quantity, float Damage);
 
 	void UseWeapon();
+	
+protected:
+	virtual void BeginPlay() override;
+	
 private:
 	EItemType ItemType;
 	float Damage;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
+	UInventoryDataItems* DataAsset;
 };

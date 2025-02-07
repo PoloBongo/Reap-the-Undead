@@ -14,6 +14,12 @@ class REAPTHEUNDEAD_API UInventoryDataItems : public UDataAsset
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+	int ID;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+	int Quantity;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	UTexture* Image;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
