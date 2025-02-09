@@ -24,29 +24,45 @@ void AInventorySystem::BeginPlay()
 
 void AInventorySystem::OnButtonDoubleClicked(int32 ButtonIndex)
 {
+	UInventoryDataItems* SaveActualAssetData = nullptr;
 	static float LastClickTime = 0.0f;
 	const float CurrentTime = GetWorld()->GetTimeSeconds();
 
+	UButton* Button = ButtonsSlots[ButtonIndex];
+	FButtonStyle ButtonStyle = Button->GetStyle();
+
 	if (CurrentTime - LastClickTime < 0.3f)
 	{
+		if (IsFirstDoubleClick)
+		{
+			IsFirstDoubleClick = false;
+			return;
+		}
 		UE_LOG(LogTemp, Warning, TEXT("Double clic"));
 		if (InventorySlots.Find(ButtonIndex))
 		{
 			if (UClass* Found = FoundClassInSlot(ButtonIndex))
 			{
-				Classes.Add(Found);
-				InventorySlots.Remove(ButtonIndex);
-				UButton* Button = ButtonsSlots[ButtonIndex];
+				for (UInventoryDataItems* DataAsset : DataAssets)
+				{
+					SaveActualAssetData = DataAsset;
+					if (DataAsset->ItemClass->GetFName() == *Found->GetFName().ToString())
+					{					
+						break;
+					}
+				}
+				
 				if (DefaultSlotImage && Button)
 				{
-					FButtonStyle ButtonStyle = Button->GetStyle();
-					
 					ButtonStyle.Normal.SetResourceObject(DefaultSlotImage);
 					ButtonStyle.Hovered.SetResourceObject(DefaultSlotImage);
-					Button->SetStyle(ButtonStyle);
-
-					LoadInventory();
 				}
+
+				Button->SetStyle(ButtonStyle);
+				InventorySlots.Remove(ButtonIndex);
+				SaveActualAssetData->Quantity++;
+
+				LoadInventory();
 			}
 		}
 	}
@@ -60,36 +76,31 @@ void AInventorySystem::LoadInventory()
 
 	InventoryWrapBox->ClearChildren();
 	
-	for (UClass* Classe : Classes)
+	for (UInventoryDataItems* Data : DataAssets)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Vérification de la classe: %s"), *Classe->GetName());
+		UE_LOG(LogTemp, Warning, TEXT("Vérification de l'item dans Data: %s"), *Data->ItemClass->GetName());
 
-		for (UInventoryDataItems* Data : DataAssets)
+		if (Data->Quantity > 0)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Vérification de l'item dans Data: %s"), *Data->ItemClass->GetName());
+			UImage* ItemImage = NewObject<UImage>(this);
 
-			if (Classe->GetFName() == Data->ItemClass->GetFName())
+			if (UTexture* BaseTexture = Data->Image)
 			{
-				UImage* ItemImage = NewObject<UImage>(this);
-
-				if (UTexture* BaseTexture = Data->Image)
+				UTexture2D* ItemTexture2D = Cast<UTexture2D>(BaseTexture);
+				if (ItemTexture2D)
 				{
-					UTexture2D* ItemTexture2D = Cast<UTexture2D>(BaseTexture);
-					if (ItemTexture2D)
-					{
-						FSlateBrush ImageBrush;
-						ImageBrush.SetResourceObject(ItemTexture2D);
-						ItemImage->SetBrush(ImageBrush);
-						FVector2D ImageSize(100.f, 400.f);
-						InventoryWrapBox->AddChildToWrapBox(ItemImage);
-						ItemImage->SetBrushSize(ImageSize);
+					FSlateBrush ImageBrush;
+					ImageBrush.SetResourceObject(ItemTexture2D);
+					ItemImage->SetBrush(ImageBrush);
+					FVector2D ImageSize(100.f, 400.f);
+					InventoryWrapBox->AddChildToWrapBox(ItemImage);
+					ItemImage->SetBrushSize(ImageSize);
 
-						ItemImage->OnMouseButtonDownEvent.BindUFunction(this, FName("OnItemClicked"));
-					}
-					else
-					{
-						UE_LOG(LogTemp, Warning, TEXT("Le cast UTexture failed pour: %s"), *Data->ItemClass->GetName());
-					}
+					ItemImage->OnMouseButtonDownEvent.BindUFunction(this, FName("OnItemClicked"));
+				}
+				else
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Le cast UTexture failed pour: %s"), *Data->ItemClass->GetName());
 				}
 			}
 		}
@@ -137,7 +148,6 @@ void AInventorySystem::AddItem(UInventoryDataItems* ItemData)
 				ItemImage->OnMouseButtonDownEvent.BindUFunction(this, FName("OnItemClicked"));
 
 				UE_LOG(LogTemp, Warning, TEXT("Item ajouté à l'inventaire: %s"), *ItemData->ItemClass->GetName());
-				Classes.Add(ItemData->ItemClass);
 			}
 			else
 			{
@@ -166,7 +176,6 @@ void AInventorySystem::RemoveItem(UInventoryDataItems* ItemData)
 					{
 						ItemImage->RemoveFromParent();
 						UE_LOG(LogTemp, Warning, TEXT("Item supprimé de l'inventaire: %s"), *ItemData->ItemClass->GetName());
-						Classes.Remove(ItemData->ItemClass);
 						ItemData->Quantity = 0;
 					}
 					else
@@ -203,6 +212,7 @@ void AInventorySystem::InteractInventory()
 		PlayerController->SetInputMode(FInputModeUIOnly());
 		InventoryBorder->SetVisibility(ESlateVisibility::Visible);
 		ImageBtnCloseInventory->SetVisibility(ESlateVisibility::Visible);
+		IsFirstDoubleClick = true;
 	}
 	PlayerController->SetShowMouseCursor(!IsOpen);
 	IsOpen = !IsOpen;
@@ -238,19 +248,19 @@ void AInventorySystem::UseSlots(int Index)
 	{
 		AItem* SpawnedItem;
 
-		if (InstanciatedItems.Contains(Found))
+		if (InstanciatedItems.Contains(Found->GetClass()))
 		{
-			SpawnedItem = InstanciatedItems[Found];
+			SpawnedItem = InstanciatedItems[Found->GetClass()];
 		}
 		else
 		{
 			FVector SpawnLocation(0.f, 0.f, 0.f);
 			FRotator SpawnRotation(0.f, 0.f, 0.f);
                     
-			SpawnedItem = GetWorld()->SpawnActor<AItem>(Found, SpawnLocation, SpawnRotation);
+			SpawnedItem = GetWorld()->SpawnActor<AItem>(Found->GetClass(), SpawnLocation, SpawnRotation);
 			if (SpawnedItem)
 			{
-				InstanciatedItems.Add(Found, SpawnedItem);
+				InstanciatedItems.Add(Found->GetClass(), SpawnedItem);
 			}
 		}
 
@@ -263,21 +273,10 @@ void AInventorySystem::UseSlots(int Index)
 
 UClass* AInventorySystem::FoundClassInSlot(int32 Index)
 {
-	if (UClass** ItemPtr = InventorySlots.Find(Index))
+	if (UClass** ItemClass = InventorySlots.Find(Index))
 	{
-		UClass* Item = *ItemPtr;
-
-		if (UClass* ItemClass = Cast<UClass>(Item))
-		{
-			if (ItemClass->IsChildOf(AItem::StaticClass()))
-			{
-				return ItemClass;
-			}
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("La référence n'est pas un UClass."));
-		}
+		return *ItemClass;
 	}
+
 	return nullptr;
 }

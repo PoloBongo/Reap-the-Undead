@@ -23,6 +23,9 @@ public:
 	AItem();
 
 	void UseItem();
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
+	UInventoryDataItems* DataAsset;
 
 protected:
 	virtual void BeginPlay() override;
@@ -33,8 +36,4 @@ private:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Constructor", meta=(AllowPrivateAccess="true"))
 	TEnumAsByte<EItemUsable> ItemUsable;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
-	UInventoryDataItems* DataAsset;
-	
 };

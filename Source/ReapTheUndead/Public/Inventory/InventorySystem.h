@@ -47,7 +47,7 @@ protected:
 	
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
-	TArray<UClass*> Classes;
+	TArray<AItem*> Classes;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
 	TArray<UInventoryDataItems*> DataAssets;
@@ -80,7 +80,8 @@ private:
 	
 	bool IsOpen = false;
 	bool DoublonFound = false;
-
+	bool IsFirstDoubleClick = true;
+	
 	UFUNCTION(BlueprintCallable, Category = "Custom Function")
 	void CloseInventory();
 

@@ -4,6 +4,8 @@
 #include "Engine/DataAsset.h"
 #include "InventoryDataItems.generated.h"
 
+class AItem;
+
 /**
  * 
  */
