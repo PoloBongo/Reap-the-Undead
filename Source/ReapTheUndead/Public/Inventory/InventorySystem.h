@@ -37,9 +37,9 @@ protected:
 	static EItemType GetItemType(EItemType ItemType);
 
 	UFUNCTION(BlueprintCallable, Category = "Custom Function")
-	void AddItem(UInventoryDataItems* ItemData);
+	void AddItem(UInventoryDataItems* ItemData, int Amount = 1);
 	UFUNCTION(BlueprintCallable, Category = "Custom Function")
-	void RemoveItem(UInventoryDataItems* ItemData);
+	void RemoveItem(UInventoryDataItems* ItemData, int Amount = 1);
 
 	int ID;
 	int Quantity;
@@ -75,11 +75,8 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true"))
 	TMap<UClass*, AItem*> InstanciatedItems;
-
-	void UpdateInventorySlotImage();
 	
 	bool IsOpen = false;
-	bool DoublonFound = false;
 	bool IsFirstDoubleClick = true;
 	
 	UFUNCTION(BlueprintCallable, Category = "Custom Function")

@@ -1,7 +1,6 @@
 #include "Planting/PlantingSystem.h"
 #include "TimerManager.h"
 #include "NiagaraFunctionLibrary.h"
-#include "NiagaraComponent.h"
 
 APlantingSystem::APlantingSystem()
 {
@@ -25,24 +24,23 @@ void APlantingSystem::Tick(float DeltaTime)
 
 void APlantingSystem::StartPlanting()
 {
-	GetWorldTimerManager().SetTimer(FirstPlantingRateTimerHandle, this, &APlantingSystem::InitFirstMeshEvolve, FirstEvolutionRate, false);
-	GetWorldTimerManager().SetTimer(PlantingRateTimerHandle, this, &APlantingSystem::EvolutionPlanting, EvolutionRate, true);
+	GetWorldTimerManager().SetTimer(PlantingRateTimerHandle, this, &APlantingSystem::EvolutionPlanting, EvolutionRate[0], true);
 }
 
 void APlantingSystem::EvolutionPlanting()
 {
-	UNiagaraComponent* NiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(
-	EvolutionEffect,
-	PlantMesh,
-	NAME_None,
-	FVector(0.f),
-	FRotator(0.f),
-	EAttachLocation::Type::KeepRelativeOffset,
-	true);
-
-	if (NiagaraComponent)
+	if (IndexActualMesh < PlantsMesh.Num())
 	{
-		NiagaraComponent->OnSystemFinished.AddDynamic(this, &APlantingSystem::OnNiagaraFinished);
+		GetWorldTimerManager().SetTimer(ShowPlantingRateTimerHandle, this, &APlantingSystem::OnNiagaraFinished, DelayShowPlant, false);
+
+		UNiagaraFunctionLibrary::SpawnSystemAttached(
+			EvolutionEffect,
+			PlantMesh,
+			NAME_None,
+			FVector(0.f),
+			FRotator(0.f),
+			EAttachLocation::Type::KeepRelativeOffset,
+			true);
 	}
 }
 
@@ -50,7 +48,7 @@ void APlantingSystem::SwitchMesh(int _indexMesh)
 {
 	if (!PlantsMesh.IsValidIndex(_indexMesh))
 	{
-		UE_LOG(LogTemp, Error, TEXT("index %d invalid"), _indexMesh);
+		UE_LOG(LogTemp, Error, TEXT("Index %d is invalid"), _indexMesh);
 		GetWorld()->GetTimerManager().ClearTimer(PlantingRateTimerHandle);
 		return;
 	}
@@ -58,29 +56,28 @@ void APlantingSystem::SwitchMesh(int _indexMesh)
 	if (PlantMesh)
 	{
 		PlantMesh->SetStaticMesh(PlantsMesh[_indexMesh]);
+
+		GetWorld()->GetTimerManager().ClearTimer(PlantingRateTimerHandle);
+		if (_indexMesh + 1 < PlantsMesh.Num())
+		{
+			GetWorldTimerManager().SetTimer(PlantingRateTimerHandle, this, &APlantingSystem::EvolutionPlanting, EvolutionRate[_indexMesh + 1], true);
+		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("le plantMesh est null"));
+		UE_LOG(LogTemp, Error, TEXT("PlantMesh is null"));
 	}
-	
-	if (_indexMesh == PlantsMesh.Max() - 2)
+}
+
+void APlantingSystem::OnNiagaraFinished()
+{
+	if (IndexActualMesh < PlantsMesh.Num())
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("end of evolution"));
+		SwitchMesh(IndexActualMesh);
+		IndexActualMesh++;
+	}
+	else
+	{
 		GetWorld()->GetTimerManager().ClearTimer(PlantingRateTimerHandle);
 	}
-}
-
-void APlantingSystem::OnNiagaraFinished(UNiagaraComponent* NiagaraComponent)
-{
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("next evolution"));
-	SwitchMesh(IndexActualMesh);
-	IndexActualMesh++;
-}
-
-void APlantingSystem::InitFirstMeshEvolve()
-{
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("first evolve"));
-	SwitchMesh(IndexActualMesh);
-	IndexActualMesh++;
 }

@@ -8,7 +8,11 @@
 #include "Inventory/Item.h"
 #include "Inventory/DataAsset/InventoryDataItems.h"
 
-AInventorySystem::AInventorySystem()
+AInventorySystem::AInventorySystem(): ID(0), Quantity(0), Image(nullptr), InventoryWidget(nullptr),
+                                      InventoryWrapBox(nullptr),
+                                      ImageBtnCloseInventory(nullptr),
+                                      DefaultSlotImage(nullptr),
+                                      InventoryBorder(nullptr)
 {
 	PrimaryActorTick.bCanEverTick = true;
 }
@@ -47,7 +51,7 @@ void AInventorySystem::OnButtonDoubleClicked(int32 ButtonIndex)
 				{
 					SaveActualAssetData = DataAsset;
 					if (DataAsset->ItemClass->GetFName() == *Found->GetFName().ToString())
-					{					
+					{
 						break;
 					}
 				}
@@ -94,8 +98,7 @@ void AInventorySystem::LoadInventory()
 					ItemImage->SetBrush(ImageBrush);
 					FVector2D ImageSize(100.f, 400.f);
 					InventoryWrapBox->AddChildToWrapBox(ItemImage);
-					ItemImage->SetBrushSize(ImageSize);
-
+					ItemImage->SetDesiredSizeOverride(ImageSize);
 					ItemImage->OnMouseButtonDownEvent.BindUFunction(this, FName("OnItemClicked"));
 				}
 				else
@@ -107,86 +110,23 @@ void AInventorySystem::LoadInventory()
 	}
 }
 
-void AInventorySystem::AddItem(UInventoryDataItems* ItemData)
+void AInventorySystem::AddItem(UInventoryDataItems* ItemData, int Amount)
 {
-	if (!InventoryWrapBox || !ItemData) return;
-
-	for (int32 i = 0; i < InventoryWrapBox->GetChildrenCount(); ++i)
+	if (DataAssets.Find(ItemData))
 	{
-		UImage* ItemImage = Cast<UImage>(InventoryWrapBox->GetChildAt(i));
-		if (ItemImage)
-		{
-			UTexture* ItemImageTexture = Cast<UTexture>(ItemImage->Brush.GetResourceObject());
-			if (ItemImageTexture)
-			{
-				if (ItemImageTexture == ItemData->Image)
-				{
-					UE_LOG(LogTemp, Warning, TEXT("Doublon trouvé. +1 manuelo"));
-					ItemData->Quantity++;
-					DoublonFound = true;
-					break;
-				}
-			}
-		}
+		ItemData->Quantity += Amount;
+
+		LoadInventory();
 	}
-
-	if (!DoublonFound)
-	{
-		UImage* ItemImage = NewObject<UImage>(this);
-
-		if (UTexture* BaseTexture = ItemData->Image)
-		{
-			UTexture2D* ItemTexture2D = Cast<UTexture2D>(BaseTexture);
-			if (ItemTexture2D)
-			{
-				FSlateBrush NewImageBrush;
-				NewImageBrush.SetResourceObject(ItemTexture2D);
-				ItemImage->SetBrush(NewImageBrush);
-				FVector2D ImageSize(100.f, 400.f);
-				ItemImage->SetBrushSize(ImageSize);
-				InventoryWrapBox->AddChildToWrapBox(ItemImage);
-				ItemImage->OnMouseButtonDownEvent.BindUFunction(this, FName("OnItemClicked"));
-
-				UE_LOG(LogTemp, Warning, TEXT("Item ajouté à l'inventaire: %s"), *ItemData->ItemClass->GetName());
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Le cast vers UTexture2D a échoué pour: %s"), *ItemData->ItemClass->GetName());
-			}
-		}
-	}
-	DoublonFound = false;
 }
 
-void AInventorySystem::RemoveItem(UInventoryDataItems* ItemData)
+void AInventorySystem::RemoveItem(UInventoryDataItems* ItemData, int Amount)
 {
-	if (!InventoryWrapBox || !ItemData) return;
-
-	for (int32 i = 0; i < InventoryWrapBox->GetChildrenCount(); ++i)
+	if (DataAssets.Find(ItemData))
 	{
-		UImage* ItemImage = Cast<UImage>(InventoryWrapBox->GetChildAt(i));
-		if (ItemImage)
-		{
-			if (UTexture* BaseTexture = ItemData->Image)
-			{
-				UTexture2D* ItemTexture2D = Cast<UTexture2D>(BaseTexture);
-				if (ItemTexture2D && ItemImage->GetBrush().GetResourceObject() == ItemTexture2D)
-				{
-					if (ItemData->Quantity <= 1)
-					{
-						ItemImage->RemoveFromParent();
-						UE_LOG(LogTemp, Warning, TEXT("Item supprimé de l'inventaire: %s"), *ItemData->ItemClass->GetName());
-						ItemData->Quantity = 0;
-					}
-					else
-					{
-						ItemData->Quantity--;
-						UE_LOG(LogTemp, Warning, TEXT("Item pas supprimé mais -1 zbi: %s"), *ItemData->ItemClass->GetName());
-					}
-					break;
-				}
-			}
-		}
+		ItemData->Quantity -= Amount;
+
+		LoadInventory();
 	}
 }
 
@@ -226,18 +166,6 @@ void AInventorySystem::CloseInventory()
 EItemType AInventorySystem::GetItemType(const EItemType ItemType)
 {
 	return ItemType;
-}
-
-void AInventorySystem::UpdateInventorySlotImage()
-{
-	UButton* Button = ButtonsSlots[0];
-	// if (!Button) return;
-	//
-	// FButtonStyle ButtonStyle = Button->WidgetStyle;
-	//
-	// ButtonStyle.Normal.SetResourceObject();
-	//
-	// Button->SetStyle(ButtonStyle);
 }
 
 void AInventorySystem::UseSlots(int Index)
