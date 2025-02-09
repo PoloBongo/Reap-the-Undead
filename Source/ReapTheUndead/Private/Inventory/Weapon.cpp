@@ -15,11 +15,11 @@ void AWeapon::BeginPlay()
 
 void AWeapon::UseWeapon()
 {
+	if (DataAsset->Quantity <= 0) return;
+	DataAsset->Quantity--;
+
 	UE_LOG(LogTemp, Error, TEXT("ID : %d"), ID);
 	UE_LOG(LogTemp, Error, TEXT("Type : %d"), ItemType);
 	UE_LOG(LogTemp, Error, TEXT("Quantity : %d"), Quantity);
 	UE_LOG(LogTemp, Error, TEXT("Damage : %f"), Damage);
-
-	if (Quantity <= 0) return;
-	Quantity--;
 }
