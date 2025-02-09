@@ -30,13 +30,13 @@ private:
 	TArray<UStaticMesh*> PlantsMesh;
 	
 	FTimerHandle PlantingRateTimerHandle;
-	FTimerHandle FirstPlantingRateTimerHandle;
+	FTimerHandle ShowPlantingRateTimerHandle;
 	
 	UPROPERTY(EditAnywhere, Category="Plant")
-	float EvolutionRate = 3.f;
+	TArray<float> EvolutionRate;
 
 	UPROPERTY(EditAnywhere, Category="Plant")
-	float FirstEvolutionRate = 5.f;
+	float DelayShowPlant = 1.f;
 
 	UPROPERTY(EditAnywhere, Category="Plant")
 	int IndexActualMesh = 0;
@@ -44,11 +44,5 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Niagara Effect", meta=(AllowPrivateAccess="true"))
 	UNiagaraSystem* EvolutionEffect;
 
-	UFUNCTION()
-	void OnNiagaraFinished(UNiagaraComponent* NiagaraComponent);
-	
-	UFUNCTION()
-	void InitFirstMeshEvolve();
-
-	bool AntiSpawnNiagaraForFirstUsage = false;
+	void OnNiagaraFinished();
 };
