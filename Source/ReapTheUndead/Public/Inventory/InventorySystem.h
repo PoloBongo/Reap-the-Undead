@@ -4,6 +4,7 @@
 #include "GameFramework/Actor.h"
 #include "InventorySystem.generated.h"
 
+class UWidgetComponent;
 class AItem;
 class UWrapBox;
 class UInventoryDataItems;
@@ -61,8 +62,11 @@ private:
 	UImage* ImageBtnCloseInventory;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
-	UBorder* InventoryBorder;
+	UTexture* DefaultSlotImage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
+	UBorder* InventoryBorder;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
 	TArray<UButton*> ButtonsSlots;
 
@@ -80,8 +84,10 @@ private:
 	UFUNCTION(BlueprintCallable, Category = "Custom Function")
 	void CloseInventory();
 
-	UFUNCTION()
-	void OnItemClicked(const FGeometry& MyGeometry, const FPointerEvent& MouseEvent);
-
 	void LoadInventory();
+
+	UFUNCTION(BlueprintCallable, Category = "Custom Function")
+	void OnButtonDoubleClicked(int32 ButtonIndex);
+
+	UClass* FoundClassInSlot(int32 Index);
 };
