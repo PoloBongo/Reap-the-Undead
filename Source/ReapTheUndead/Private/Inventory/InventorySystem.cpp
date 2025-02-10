@@ -15,6 +15,7 @@ AInventorySystem::AInventorySystem(): ID(0), Quantity(0), Image(nullptr), Invent
                                       InventoryBorder(nullptr)
 {
 	PrimaryActorTick.bCanEverTick = true;
+	OnActionTriggered();
 }
 
 void AInventorySystem::BeginPlay()

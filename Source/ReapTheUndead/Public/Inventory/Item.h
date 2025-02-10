@@ -22,7 +22,7 @@ class REAPTHEUNDEAD_API AItem : public AInventorySystem
 public:
 	AItem();
 
-	void UseItem();
+	virtual void UseItem();
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
 	UInventoryDataItems* DataAsset;
@@ -30,7 +30,6 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	
-private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Constructor", meta=(AllowPrivateAccess="true"))
 	TEnumAsByte<EItemType> ItemType;
 	

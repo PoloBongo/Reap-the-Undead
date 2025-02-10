@@ -32,6 +32,9 @@ public:
 	void InteractInventory();
 	void UseSlots(int Index);
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "Custom Function")
+	void OnActionTriggered();
+
 protected:
 	virtual void BeginPlay() override;
 	static EItemType GetItemType(EItemType ItemType);
