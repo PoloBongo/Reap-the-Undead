@@ -1,9 +1,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Blueprint/UserWidget.h"
 #include "GameFramework/Actor.h"
 #include "InventorySystem.generated.h"
 
+class USlotButtonInventory;
 class UWidgetComponent;
 class AItem;
 class UWrapBox;
@@ -19,6 +21,20 @@ enum EItemType
 	Ed_I UMETA(DisplayName="Item"),
 	Ed_W UMETA(DisplayName="Weapon"),
 	Ed_Max UMETA(Hidden)
+};
+
+USTRUCT(BlueprintType)
+struct FButtonWithID
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UButton* Button;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 ButtonID;
+
+	FButtonWithID() : Button(nullptr), ButtonID(-1) {}
 };
 
 UCLASS()
@@ -47,7 +63,7 @@ protected:
 	
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
-	TArray<UButton*> ImagesMainInventory;
+	TArray<USlotButtonInventory*> ImagesButtonsInventory;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
 	TArray<AItem*> Classes;
@@ -90,5 +106,11 @@ private:
 	UFUNCTION(BlueprintCallable, Category = "Custom Function")
 	void OnButtonDoubleClicked(int32 ButtonIndex);
 
+	UFUNCTION(BlueprintCallable, Category = "Custom Function")
+	void OnButtonClickedMainSlotInventory(int32 ButtonIndex);
+
 	UClass* FoundClassInSlot(int32 Index);
+
+	UFUNCTION(BlueprintCallable, Category = "Custom Function")
+	void GetSlotsMainInventory(TArray<USlotButtonInventory*> Slots);
 };
