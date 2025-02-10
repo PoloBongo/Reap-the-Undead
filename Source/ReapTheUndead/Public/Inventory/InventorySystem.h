@@ -47,6 +47,9 @@ protected:
 	
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
+	TArray<UButton*> ImagesMainInventory;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
 	TArray<AItem*> Classes;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
@@ -83,6 +86,9 @@ private:
 	void CloseInventory();
 
 	void LoadInventory();
+
+	UFUNCTION(BlueprintCallable, Category = "Custom Function")
+	void OnItemClicked();
 
 	UFUNCTION(BlueprintCallable, Category = "Custom Function")
 	void OnButtonDoubleClicked(int32 ButtonIndex);

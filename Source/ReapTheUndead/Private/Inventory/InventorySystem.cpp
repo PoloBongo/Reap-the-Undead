@@ -79,6 +79,7 @@ void AInventorySystem::LoadInventory()
 	if (!InventoryWrapBox) return;
 
 	InventoryWrapBox->ClearChildren();
+	ImagesMainInventory.Reset();
 	
 	for (UInventoryDataItems* Data : DataAssets)
 	{
@@ -86,20 +87,25 @@ void AInventorySystem::LoadInventory()
 
 		if (Data->Quantity > 0)
 		{
-			UImage* ItemImage = NewObject<UImage>(this);
+			UButton* ItemImage = NewObject<UButton>(this);
+			FButtonStyle ButtonStyle = ItemImage->GetStyle();
 
 			if (UTexture* BaseTexture = Data->Image)
 			{
 				UTexture2D* ItemTexture2D = Cast<UTexture2D>(BaseTexture);
 				if (ItemTexture2D)
 				{
-					FSlateBrush ImageBrush;
-					ImageBrush.SetResourceObject(ItemTexture2D);
-					ItemImage->SetBrush(ImageBrush);
+					ButtonStyle.Normal.SetResourceObject(ItemTexture2D);
+					ButtonStyle.Hovered.SetResourceObject(ItemTexture2D);
+					ButtonStyle.Pressed.SetResourceObject(ItemTexture2D);
 					FVector2D ImageSize(100.f, 400.f);
+					ButtonStyle.Normal.SetImageSize(ImageSize);
+					ButtonStyle.Hovered.SetImageSize(ImageSize);
+					ButtonStyle.Pressed.SetImageSize(ImageSize);
 					InventoryWrapBox->AddChildToWrapBox(ItemImage);
-					ItemImage->SetDesiredSizeOverride(ImageSize);
-					ItemImage->OnMouseButtonDownEvent.BindUFunction(this, FName("OnItemClicked"));
+					ItemImage->SetStyle(ButtonStyle);
+					ImagesMainInventory.Add(ItemImage);
+					ItemImage->OnClicked.AddDynamic(this, &AInventorySystem::OnItemClicked);
 				}
 				else
 				{
@@ -108,6 +114,11 @@ void AInventorySystem::LoadInventory()
 			}
 		}
 	}
+}
+
+void AInventorySystem::OnItemClicked()
+{
+	UE_LOG(LogTemp, Warning, TEXT("item cliqué"));
 }
 
 void AInventorySystem::AddItem(UInventoryDataItems* ItemData, int Amount)
@@ -176,19 +187,19 @@ void AInventorySystem::UseSlots(int Index)
 	{
 		AItem* SpawnedItem;
 
-		if (InstanciatedItems.Contains(Found->GetClass()))
+		if (InstanciatedItems.Contains(Found))
 		{
-			SpawnedItem = InstanciatedItems[Found->GetClass()];
+			SpawnedItem = InstanciatedItems[Found];
 		}
 		else
 		{
 			FVector SpawnLocation(0.f, 0.f, 0.f);
 			FRotator SpawnRotation(0.f, 0.f, 0.f);
                     
-			SpawnedItem = GetWorld()->SpawnActor<AItem>(Found->GetClass(), SpawnLocation, SpawnRotation);
+			SpawnedItem = GetWorld()->SpawnActor<AItem>(Found, SpawnLocation, SpawnRotation);
 			if (SpawnedItem)
 			{
-				InstanciatedItems.Add(Found->GetClass(), SpawnedItem);
+				InstanciatedItems.Add(Found, SpawnedItem);
 			}
 		}
 
