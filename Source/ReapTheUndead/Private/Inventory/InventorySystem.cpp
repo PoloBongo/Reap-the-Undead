@@ -15,7 +15,6 @@ AInventorySystem::AInventorySystem(): ID(0), Quantity(0), Image(nullptr), Invent
                                       InventoryBorder(nullptr)
 {
 	PrimaryActorTick.bCanEverTick = true;
-	OnActionTriggered();
 }
 
 void AInventorySystem::BeginPlay()
@@ -24,7 +23,7 @@ void AInventorySystem::BeginPlay()
 	if (!InventoryWidget) return;
 	InventoryWidget->AddToViewport();
 
-	LoadInventory();
+	//LoadInventory();
 }
 
 void AInventorySystem::OnButtonDoubleClicked(int32 ButtonIndex)
@@ -106,7 +105,6 @@ void AInventorySystem::LoadInventory()
 					InventoryWrapBox->AddChildToWrapBox(ItemImage);
 					ItemImage->SetStyle(ButtonStyle);
 					ImagesMainInventory.Add(ItemImage);
-					ItemImage->OnClicked.AddDynamic(this, &AInventorySystem::OnItemClicked);
 				}
 				else
 				{
@@ -115,11 +113,6 @@ void AInventorySystem::LoadInventory()
 			}
 		}
 	}
-}
-
-void AInventorySystem::OnItemClicked()
-{
-	UE_LOG(LogTemp, Warning, TEXT("item cliqué"));
 }
 
 void AInventorySystem::AddItem(UInventoryDataItems* ItemData, int Amount)
