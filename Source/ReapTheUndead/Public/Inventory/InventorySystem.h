@@ -5,6 +5,7 @@
 #include "GameFramework/Actor.h"
 #include "InventorySystem.generated.h"
 
+class AGameNotificationManager;
 class USlotButtonInventory;
 class UWidgetComponent;
 class AItem;
@@ -97,6 +98,10 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true"))
 	TMap<UClass*, AItem*> InstanciatedItems;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
+	TSubclassOf<AGameNotificationManager> GameNotificationManagerClass;
+	AGameNotificationManager* GameNotificationManager;
 	
 	bool IsOpen = false;
 	bool IsFirstDoubleClick = true;
