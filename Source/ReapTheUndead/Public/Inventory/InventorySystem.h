@@ -66,10 +66,10 @@ private:
 	TArray<USlotButtonInventory*> ImagesButtonsInventory;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
-	float SlotsUsedMainInvetory;
+	int SlotsUsedMainInvetory;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
-	float SlotsUsed;
+	int SlotsUsed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
 	TArray<UInventoryDataItems*> DataAssets;
@@ -100,6 +100,8 @@ private:
 	
 	bool IsOpen = false;
 	bool IsFirstDoubleClick = true;
+	bool ItemSelected = false;
+	int StockIndexSelected;
 	
 	UFUNCTION(BlueprintCallable, Category = "Custom Function")
 	void CloseInventory();
