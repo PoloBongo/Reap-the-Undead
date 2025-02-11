@@ -229,27 +229,34 @@ void AInventorySystem::UseSlots(int Index)
 
 	if (ItemSelected)
 	{
-		InventorySlots.Add(Index, DataAssets[StockIndexSelected]->ItemClass);
-		DataAssets[StockIndexSelected]->InMainInventory = false;
-		DataAssets[StockIndexSelected]->UsedSlot = Index;
+		if (InventorySlots.Find(Index))
+		{
+			GameNotificationManager->SetTextNotification(FString::Printf(TEXT("Impossible de mettre %s dans le raccourcie %d car il y a déjà un item"), *DataAssets[StockIndexSelected]->Image->GetName(), StockIndexSelected), FColor::Red);
+		}
+		else
+		{
+			InventorySlots.Add(Index, DataAssets[StockIndexSelected]->ItemClass);
+			DataAssets[StockIndexSelected]->InMainInventory = false;
+			DataAssets[StockIndexSelected]->UsedSlot = Index;
 
-		FButtonStyle ButtonStyle = ButtonsSlots[StockIndexSelected]->GetStyle();
+			FButtonStyle ButtonStyle = ButtonsSlots[StockIndexSelected]->GetStyle();
 			
-		ButtonStyle.Normal.SetResourceObject(DataAssets[StockIndexSelected]->Image);
-		ButtonStyle.Hovered.SetResourceObject(DataAssets[StockIndexSelected]->Image);
-		ButtonStyle.Pressed.SetResourceObject(DataAssets[StockIndexSelected]->Image);
+			ButtonStyle.Normal.SetResourceObject(DataAssets[StockIndexSelected]->Image);
+			ButtonStyle.Hovered.SetResourceObject(DataAssets[StockIndexSelected]->Image);
+			ButtonStyle.Pressed.SetResourceObject(DataAssets[StockIndexSelected]->Image);
 			
-		FVector2D ImageSize(64.f, 64.f);
-		ButtonStyle.Normal.SetImageSize(ImageSize);
-		ButtonStyle.Hovered.SetImageSize(ImageSize);
-		ButtonStyle.Pressed.SetImageSize(ImageSize);
+			FVector2D ImageSize(64.f, 64.f);
+			ButtonStyle.Normal.SetImageSize(ImageSize);
+			ButtonStyle.Hovered.SetImageSize(ImageSize);
+			ButtonStyle.Pressed.SetImageSize(ImageSize);
 
-		ButtonsSlots[Index]->SetStyle(ButtonStyle);
-		ItemSelected = false;
+			ButtonsSlots[Index]->SetStyle(ButtonStyle);
+			ItemSelected = false;
 
-		GameNotificationManager->SetTextNotification(FString::Printf(TEXT("%s est maintenant sur le raccourcie %d"), *DataAssets[StockIndexSelected]->Image->GetName(), StockIndexSelected), FColor::Green);
+			GameNotificationManager->SetTextNotification(FString::Printf(TEXT("%s est maintenant sur le raccourcie %d"), *DataAssets[StockIndexSelected]->Image->GetName(), StockIndexSelected), FColor::Green);
 
-		LoadInventory();
+			LoadInventory();
+		}
 	}
 	else
 	{
