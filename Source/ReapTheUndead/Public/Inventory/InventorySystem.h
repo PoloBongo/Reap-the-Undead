@@ -66,7 +66,10 @@ private:
 	TArray<USlotButtonInventory*> ImagesButtonsInventory;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
-	TArray<AItem*> Classes;
+	float SlotsUsedMainInvetory;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
+	float SlotsUsed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
 	TArray<UInventoryDataItems*> DataAssets;
@@ -81,7 +84,7 @@ private:
 	UImage* ImageBtnCloseInventory;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
-	UTexture* DefaultSlotImage;
+	TMap<int, UTexture*> DefaultSlotImage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
 	UBorder* InventoryBorder;

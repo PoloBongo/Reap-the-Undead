@@ -9,10 +9,10 @@
 #include "Inventory/SlotButtonInventory.h"
 #include "Inventory/DataAsset/InventoryDataItems.h"
 
-AInventorySystem::AInventorySystem(): ID(0), Quantity(0), Image(nullptr), InventoryWidget(nullptr),
+AInventorySystem::AInventorySystem(): ID(0), Quantity(0), Image(nullptr), SlotsUsedMainInvetory(0), SlotsUsed(0),
+                                      InventoryWidget(nullptr),
                                       InventoryWrapBox(nullptr),
                                       ImageBtnCloseInventory(nullptr),
-                                      DefaultSlotImage(nullptr),
                                       InventoryBorder(nullptr)
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -57,15 +57,16 @@ void AInventorySystem::OnButtonDoubleClicked(int32 ButtonIndex)
 					}
 				}
 				
-				if (DefaultSlotImage && Button)
+				if (DefaultSlotImage.Num() > 0 && Button)
 				{
-					ButtonStyle.Normal.SetResourceObject(DefaultSlotImage);
-					ButtonStyle.Hovered.SetResourceObject(DefaultSlotImage);
+					ButtonStyle.Normal.SetResourceObject(DefaultSlotImage[SaveActualAssetData->UsedSlot]);
+					ButtonStyle.Hovered.SetResourceObject(DefaultSlotImage[SaveActualAssetData->UsedSlot]);
 				}
 
 				Button->SetStyle(ButtonStyle);
 				InventorySlots.Remove(ButtonIndex);
 				SaveActualAssetData->Quantity++;
+				SaveActualAssetData->InMainInventory = true;
 
 				LoadInventory();
 			}
@@ -77,7 +78,31 @@ void AInventorySystem::OnButtonDoubleClicked(int32 ButtonIndex)
 
 void AInventorySystem::OnButtonClickedMainSlotInventory(int32 ButtonIndex)
 {
-	UE_LOG(LogTemp, Warning, TEXT("clic %d"), ButtonIndex);
+	for (int i = 0; i < DataAssets.Num(); i++)
+	{
+		if (ButtonIndex == i)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("clic %d sur l'image : %s"), ButtonIndex, *DataAssets[i]->Image->GetName());
+			InventorySlots.Add(0, DataAssets[i]->ItemClass);
+			DataAssets[i]->InMainInventory = false;
+			DataAssets[i]->UsedSlot = 0;
+
+			FButtonStyle ButtonStyle = ButtonsSlots[i]->GetStyle();
+			
+			ButtonStyle.Normal.SetResourceObject(DataAssets[i]->Image);
+			ButtonStyle.Hovered.SetResourceObject(DataAssets[i]->Image);
+			ButtonStyle.Pressed.SetResourceObject(DataAssets[i]->Image);
+			
+			FVector2D ImageSize(64.f, 64.f);
+			ButtonStyle.Normal.SetImageSize(ImageSize);
+			ButtonStyle.Hovered.SetImageSize(ImageSize);
+			ButtonStyle.Pressed.SetImageSize(ImageSize);
+
+			ButtonsSlots[i]->SetStyle(ButtonStyle);
+			break;
+		}
+	}
+	LoadInventory();
 }
 
 void AInventorySystem::LoadInventory()
@@ -97,8 +122,9 @@ void AInventorySystem::LoadInventory()
     for (int32 i = 0; i < DataAssets.Num(); i++)
     {
         UInventoryDataItems* Data = DataAssets[i];
-
-        if (Data->Quantity > 0 && Index < ImagesButtonsInventory.Num())
+    	Data->UsedSlotMainInventory = i;
+    	
+        if (Data->Quantity > 0 && Index < ImagesButtonsInventory.Num() && Data->InMainInventory)
         {
             USlotButtonInventory* ItemImageButton = ImagesButtonsInventory[Index];
             if (ItemImageButton)
@@ -120,11 +146,15 @@ void AInventorySystem::LoadInventory()
                         ButtonStyle.Pressed.SetImageSize(ImageSize);
 
                         ItemImageButton->SetStyle(ButtonStyle);
-                        ItemImageButton->SetVisibility(ESlateVisibility::Visible); 
+                        ItemImageButton->SetVisibility(ESlateVisibility::Visible);
+                    	
+                    	UE_LOG(LogTemp, Warning, TEXT("data assets %d"), DataAssets.Num());
+                    	UE_LOG(LogTemp, Warning, TEXT("i %d"), i);
                     }
                 }
             }
             Index++;
+        	SlotsUsedMainInvetory = DataAssets.Num();
         }
     }
 }
@@ -138,6 +168,7 @@ void AInventorySystem::AddItem(UInventoryDataItems* ItemData, int Amount)
     else
     {
         DataAssets.Add(ItemData);
+    	ItemData->UsedSlotMainInventory = SlotsUsedMainInvetory + 1;
     }
 
     LoadInventory();
@@ -152,6 +183,7 @@ void AInventorySystem::RemoveItem(UInventoryDataItems* ItemData, int Amount)
         if (ItemData->Quantity <= 0)
         {
             DataAssets.Remove(ItemData);
+        	SlotsUsedMainInvetory--;
         }
     }
 
@@ -217,6 +249,7 @@ void AInventorySystem::UseSlots(int Index)
 			if (SpawnedItem)
 			{
 				InstanciatedItems.Add(Found, SpawnedItem);
+				SlotsUsed++;
 			}
 		}
 
