@@ -7,21 +7,17 @@ AGameNotificationManager::AGameNotificationManager(): NotificationWidget(nullptr
 	PrimaryActorTick.bCanEverTick = true;
 }
 
+void AGameNotificationManager::SetTextNotification(FString NewTextNotification, FColor Color)
+{
+	FNotification NewNotification;
+	NewNotification.Message = NewTextNotification;
+	NewNotification.Color = Color;
+	ShowNotification(NewNotification);
+}
+
 void AGameNotificationManager::BeginPlay()
 {
 	Super::BeginPlay();
-}
-
-void AGameNotificationManager::SetTextNotification(FString NewNotification, FColor Color)
-{
-	TextNotification = NewNotification;
-	if (!NotificationWidget) return;
-	NotificationWidget->SetColorAndOpacity(Color);
-	NotificationWidget->AddToViewport();
-	if (!GetWorld()->GetTimerManager().IsTimerActive(NotificationHandle))
-	{
-		GetWorldTimerManager().SetTimer(NotificationHandle, this, &AGameNotificationManager::HiddeNotification, NotificationDuration, false);
-	}
 }
 
 FString AGameNotificationManager::GetTextNotification()
@@ -29,7 +25,45 @@ FString AGameNotificationManager::GetTextNotification()
 	return TextNotification;
 }
 
-void AGameNotificationManager::HiddeNotification() const
+void AGameNotificationManager::ShowNotification(const FNotification& NewNotification)
 {
-	NotificationWidget->RemoveFromParent();
+	TextNotification = NewNotification.Message;
+	NotificationWidget->SetColorAndOpacity(NewNotification.Color);
+	NotificationQueue.Enqueue(NewNotification);
+
+	if (!GetWorld()->GetTimerManager().IsTimerActive(NotificationHandle))
+	{
+		ProcessNextNotification();
+	}
+}
+
+void AGameNotificationManager::ProcessNextNotification()
+{
+	FNotification NextNotification;
+
+	// check les files d'attentes
+	if (NotificationQueue.Dequeue(NextNotification))
+	{
+		if (NotificationWidget)
+		{
+			NotificationWidget->SetColorAndOpacity(NextNotification.Color);
+			NotificationWidget->AddToViewport();
+		}
+
+		GetWorld()->GetTimerManager().SetTimer(NotificationHandle, this, &AGameNotificationManager::HiddeNotification, NotificationDuration, false);
+	}
+	else
+	{
+		GetWorld()->GetTimerManager().ClearTimer(NotificationHandle);
+	}
+}
+
+void AGameNotificationManager::HiddeNotification()
+{
+	if (NotificationWidget)
+	{
+		NotificationWidget->RemoveFromParent();
+	}
+
+	ProcessNextNotification();
 }
