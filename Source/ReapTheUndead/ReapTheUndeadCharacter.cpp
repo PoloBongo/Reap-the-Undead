@@ -122,7 +122,11 @@ void AReapTheUndeadCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 
 		// Inventory
 		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AReapTheUndeadCharacter::OpenInventory);
-		EnhancedInputComponent->BindAction(SlotAction, ETriggerEvent::Started, this, &AReapTheUndeadCharacter::Slot1);
+		EnhancedInputComponent->BindAction(SlotAction1, ETriggerEvent::Started, this, &AReapTheUndeadCharacter::Slot1);
+		EnhancedInputComponent->BindAction(SlotAction2, ETriggerEvent::Started, this, &AReapTheUndeadCharacter::Slot2);
+		EnhancedInputComponent->BindAction(SlotAction3, ETriggerEvent::Started, this, &AReapTheUndeadCharacter::Slot3);
+		EnhancedInputComponent->BindAction(SlotAction4, ETriggerEvent::Started, this, &AReapTheUndeadCharacter::Slot4);
+		EnhancedInputComponent->BindAction(SlotAction5, ETriggerEvent::Started, this, &AReapTheUndeadCharacter::Slot5);
 	}
 	else
 	{
@@ -151,6 +155,38 @@ void AReapTheUndeadCharacter::Slot1(const FInputActionValue& Value)
 	if (InventorySystem)
 	{
 		InventorySystem->UseSlots(0);
+	}
+}
+
+void AReapTheUndeadCharacter::Slot2(const FInputActionValue& Value)
+{
+	if (InventorySystem)
+	{
+		InventorySystem->UseSlots(1);
+	}
+}
+
+void AReapTheUndeadCharacter::Slot3(const FInputActionValue& Value)
+{
+	if (InventorySystem)
+	{
+		InventorySystem->UseSlots(2);
+	}
+}
+
+void AReapTheUndeadCharacter::Slot4(const FInputActionValue& Value)
+{
+	if (InventorySystem)
+	{
+		InventorySystem->UseSlots(3);
+	}
+}
+
+void AReapTheUndeadCharacter::Slot5(const FInputActionValue& Value)
+{
+	if (InventorySystem)
+	{
+		InventorySystem->UseSlots(4);
 	}
 }
 

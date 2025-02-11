@@ -54,7 +54,19 @@ class AReapTheUndeadCharacter : public ACharacter
 	UInputAction* InventoryAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* SlotAction;
+	UInputAction* SlotAction1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* SlotAction2;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* SlotAction3;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* SlotAction4;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* SlotAction5;
 
 	UPROPERTY(EditAnywhere, Category="Instance")
 	TSubclassOf<AInteractableObjects> InteractableObjectClass;
@@ -85,6 +97,10 @@ protected:
 	void OpenInventory(const FInputActionValue& Value);
 	
 	void Slot1(const FInputActionValue& Value);
+	void Slot2(const FInputActionValue& Value);
+	void Slot3(const FInputActionValue& Value);
+	void Slot4(const FInputActionValue& Value);
+	void Slot5(const FInputActionValue& Value);
 			
 
 protected:
