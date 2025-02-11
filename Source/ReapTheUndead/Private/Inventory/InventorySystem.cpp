@@ -83,22 +83,8 @@ void AInventorySystem::OnButtonClickedMainSlotInventory(int32 ButtonIndex)
 		if (ButtonIndex == i)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("clic %d sur l'image : %s"), ButtonIndex, *DataAssets[i]->Image->GetName());
-			InventorySlots.Add(0, DataAssets[i]->ItemClass);
-			DataAssets[i]->InMainInventory = false;
-			DataAssets[i]->UsedSlot = 0;
-
-			FButtonStyle ButtonStyle = ButtonsSlots[i]->GetStyle();
-			
-			ButtonStyle.Normal.SetResourceObject(DataAssets[i]->Image);
-			ButtonStyle.Hovered.SetResourceObject(DataAssets[i]->Image);
-			ButtonStyle.Pressed.SetResourceObject(DataAssets[i]->Image);
-			
-			FVector2D ImageSize(64.f, 64.f);
-			ButtonStyle.Normal.SetImageSize(ImageSize);
-			ButtonStyle.Hovered.SetImageSize(ImageSize);
-			ButtonStyle.Pressed.SetImageSize(ImageSize);
-
-			ButtonsSlots[i]->SetStyle(ButtonStyle);
+			StockIndexSelected = i;
+			ItemSelected = true;
 			break;
 		}
 	}
@@ -209,7 +195,7 @@ void AInventorySystem::InteractInventory()
 	}
 	else
 	{
-		PlayerController->SetInputMode(FInputModeUIOnly());
+		PlayerController->SetInputMode(FInputModeGameAndUI());
 		InventoryBorder->SetVisibility(ESlateVisibility::Visible);
 		ImageBtnCloseInventory->SetVisibility(ESlateVisibility::Visible);
 		IsFirstDoubleClick = true;
@@ -231,31 +217,56 @@ EItemType AInventorySystem::GetItemType(const EItemType ItemType)
 void AInventorySystem::UseSlots(int Index)
 {
 	if (!InventoryWidget) return;
-	
-	if (UClass* Found = FoundClassInSlot(Index))
-	{
-		AItem* SpawnedItem;
 
-		if (InstanciatedItems.Contains(Found))
+	if (ItemSelected)
+	{
+		InventorySlots.Add(Index, DataAssets[StockIndexSelected]->ItemClass);
+		DataAssets[StockIndexSelected]->InMainInventory = false;
+		DataAssets[StockIndexSelected]->UsedSlot = Index;
+
+		FButtonStyle ButtonStyle = ButtonsSlots[StockIndexSelected]->GetStyle();
+			
+		ButtonStyle.Normal.SetResourceObject(DataAssets[StockIndexSelected]->Image);
+		ButtonStyle.Hovered.SetResourceObject(DataAssets[StockIndexSelected]->Image);
+		ButtonStyle.Pressed.SetResourceObject(DataAssets[StockIndexSelected]->Image);
+			
+		FVector2D ImageSize(64.f, 64.f);
+		ButtonStyle.Normal.SetImageSize(ImageSize);
+		ButtonStyle.Hovered.SetImageSize(ImageSize);
+		ButtonStyle.Pressed.SetImageSize(ImageSize);
+
+		ButtonsSlots[Index]->SetStyle(ButtonStyle);
+		ItemSelected = false;
+
+		LoadInventory();
+	}
+	else
+	{
+		if (UClass* Found = FoundClassInSlot(Index))
 		{
-			SpawnedItem = InstanciatedItems[Found];
-		}
-		else
-		{
-			FVector SpawnLocation(0.f, 0.f, 0.f);
-			FRotator SpawnRotation(0.f, 0.f, 0.f);
+			AItem* SpawnedItem;
+
+			if (InstanciatedItems.Contains(Found))
+			{
+				SpawnedItem = InstanciatedItems[Found];
+			}
+			else
+			{
+				FVector SpawnLocation(0.f, 0.f, 0.f);
+				FRotator SpawnRotation(0.f, 0.f, 0.f);
                     
-			SpawnedItem = GetWorld()->SpawnActor<AItem>(Found, SpawnLocation, SpawnRotation);
+				SpawnedItem = GetWorld()->SpawnActor<AItem>(Found, SpawnLocation, SpawnRotation);
+				if (SpawnedItem)
+				{
+					InstanciatedItems.Add(Found, SpawnedItem);
+					SlotsUsed++;
+				}
+			}
+
 			if (SpawnedItem)
 			{
-				InstanciatedItems.Add(Found, SpawnedItem);
-				SlotsUsed++;
+				SpawnedItem->UseItem();
 			}
-		}
-
-		if (SpawnedItem)
-		{
-			SpawnedItem->UseItem();
 		}
 	}
 }
