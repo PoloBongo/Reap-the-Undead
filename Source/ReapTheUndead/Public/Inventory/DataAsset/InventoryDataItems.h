@@ -26,6 +26,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	UClass* ItemClass;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+	int UsedSlotMainInventory;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+	int UsedSlot;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+	bool InMainInventory = true;
 };
 
 
