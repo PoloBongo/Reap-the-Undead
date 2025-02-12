@@ -8,12 +8,13 @@
 #include "Inventory/Item.h"
 #include "Inventory/SlotButtonInventory.h"
 #include "Inventory/DataAsset/InventoryDataItems.h"
+#include "Notification/GameNotificationManager.h"
 
 AInventorySystem::AInventorySystem(): ID(0), Quantity(0), Image(nullptr), SlotsUsedMainInvetory(0), SlotsUsed(0),
                                       InventoryWidget(nullptr),
                                       InventoryWrapBox(nullptr),
                                       ImageBtnCloseInventory(nullptr),
-                                      InventoryBorder(nullptr)
+                                      InventoryBorder(nullptr), GameNotificationManager(nullptr), StockIndexSelected(0)
 {
 	PrimaryActorTick.bCanEverTick = true;
 }
@@ -21,6 +22,12 @@ AInventorySystem::AInventorySystem(): ID(0), Quantity(0), Image(nullptr), SlotsU
 void AInventorySystem::BeginPlay()
 {
 	Super::BeginPlay();
+	FVector SpawnLocation(0.f, 0.f, 0.f);
+	FRotator SpawnRotation(0.f, 0.f, 0.f);
+	
+	GameNotificationManager = GetWorld()->SpawnActor<AGameNotificationManager>(GameNotificationManagerClass, SpawnLocation, SpawnRotation);
+
+	if (!GameNotificationManagerClass) return;
 	if (!InventoryWidget) return;
 	InventoryWidget->AddToViewport();
 
@@ -43,7 +50,7 @@ void AInventorySystem::OnButtonDoubleClicked(int32 ButtonIndex)
 			IsFirstDoubleClick = false;
 			return;
 		}
-		UE_LOG(LogTemp, Warning, TEXT("Double clic"));
+
 		if (InventorySlots.Find(ButtonIndex))
 		{
 			if (UClass* Found = FoundClassInSlot(ButtonIndex))
@@ -68,6 +75,8 @@ void AInventorySystem::OnButtonDoubleClicked(int32 ButtonIndex)
 				SaveActualAssetData->Quantity++;
 				SaveActualAssetData->InMainInventory = true;
 
+				GameNotificationManager->SetTextNotification(FString::Printf(TEXT("%s a bien été supprimé du raccourcie %d"), *SaveActualAssetData->Image->GetName(), SaveActualAssetData->UsedSlot), FColor::Green);
+
 				LoadInventory();
 			}
 		}
@@ -82,9 +91,9 @@ void AInventorySystem::OnButtonClickedMainSlotInventory(int32 ButtonIndex)
 	{
 		if (ButtonIndex == i)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("clic %d sur l'image : %s"), ButtonIndex, *DataAssets[i]->Image->GetName());
 			StockIndexSelected = i;
 			ItemSelected = true;
+			GameNotificationManager->SetTextNotification(FString::Printf(TEXT("Vous avez sélectionné l'item suivant: %s"), *DataAssets[i]->Image->GetName()), FColor::Cyan);
 			break;
 		}
 	}
@@ -190,12 +199,14 @@ void AInventorySystem::InteractInventory()
 	if (IsOpen)
 	{
 		PlayerController->SetInputMode(FInputModeGameOnly());
+		PlayerController->SetIgnoreMoveInput(false);
 		InventoryBorder->SetVisibility(ESlateVisibility::Hidden);
 		ImageBtnCloseInventory->SetVisibility(ESlateVisibility::Hidden);
 	}
 	else
 	{
 		PlayerController->SetInputMode(FInputModeGameAndUI());
+		PlayerController->SetIgnoreMoveInput(true);
 		InventoryBorder->SetVisibility(ESlateVisibility::Visible);
 		ImageBtnCloseInventory->SetVisibility(ESlateVisibility::Visible);
 		IsFirstDoubleClick = true;
@@ -220,25 +231,34 @@ void AInventorySystem::UseSlots(int Index)
 
 	if (ItemSelected)
 	{
-		InventorySlots.Add(Index, DataAssets[StockIndexSelected]->ItemClass);
-		DataAssets[StockIndexSelected]->InMainInventory = false;
-		DataAssets[StockIndexSelected]->UsedSlot = Index;
+		if (InventorySlots.Find(Index))
+		{
+			GameNotificationManager->SetTextNotification(FString::Printf(TEXT("Impossible de mettre %s dans le raccourcie %d car il y a déjà un item"), *DataAssets[StockIndexSelected]->Image->GetName(), StockIndexSelected), FColor::Red);
+		}
+		else
+		{
+			InventorySlots.Add(Index, DataAssets[StockIndexSelected]->ItemClass);
+			DataAssets[StockIndexSelected]->InMainInventory = false;
+			DataAssets[StockIndexSelected]->UsedSlot = Index;
 
-		FButtonStyle ButtonStyle = ButtonsSlots[StockIndexSelected]->GetStyle();
+			FButtonStyle ButtonStyle = ButtonsSlots[StockIndexSelected]->GetStyle();
 			
-		ButtonStyle.Normal.SetResourceObject(DataAssets[StockIndexSelected]->Image);
-		ButtonStyle.Hovered.SetResourceObject(DataAssets[StockIndexSelected]->Image);
-		ButtonStyle.Pressed.SetResourceObject(DataAssets[StockIndexSelected]->Image);
+			ButtonStyle.Normal.SetResourceObject(DataAssets[StockIndexSelected]->Image);
+			ButtonStyle.Hovered.SetResourceObject(DataAssets[StockIndexSelected]->Image);
+			ButtonStyle.Pressed.SetResourceObject(DataAssets[StockIndexSelected]->Image);
 			
-		FVector2D ImageSize(64.f, 64.f);
-		ButtonStyle.Normal.SetImageSize(ImageSize);
-		ButtonStyle.Hovered.SetImageSize(ImageSize);
-		ButtonStyle.Pressed.SetImageSize(ImageSize);
+			FVector2D ImageSize(64.f, 64.f);
+			ButtonStyle.Normal.SetImageSize(ImageSize);
+			ButtonStyle.Hovered.SetImageSize(ImageSize);
+			ButtonStyle.Pressed.SetImageSize(ImageSize);
 
-		ButtonsSlots[Index]->SetStyle(ButtonStyle);
-		ItemSelected = false;
+			ButtonsSlots[Index]->SetStyle(ButtonStyle);
+			ItemSelected = false;
 
-		LoadInventory();
+			GameNotificationManager->SetTextNotification(FString::Printf(TEXT("%s est maintenant sur le raccourcie %d"), *DataAssets[StockIndexSelected]->Image->GetName(), StockIndexSelected), FColor::Green);
+
+			LoadInventory();
+		}
 	}
 	else
 	{

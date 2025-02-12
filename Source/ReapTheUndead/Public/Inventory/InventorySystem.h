@@ -5,6 +5,7 @@
 #include "GameFramework/Actor.h"
 #include "InventorySystem.generated.h"
 
+class AGameNotificationManager;
 class USlotButtonInventory;
 class UWidgetComponent;
 class AItem;
@@ -48,14 +49,13 @@ public:
 	void InteractInventory();
 	void UseSlots(int Index);
 
-protected:
-	virtual void BeginPlay() override;
-	static EItemType GetItemType(EItemType ItemType);
-
 	UFUNCTION(BlueprintCallable, Category = "Custom Function")
 	void AddItem(UInventoryDataItems* ItemData, int Amount = 1);
 	UFUNCTION(BlueprintCallable, Category = "Custom Function")
 	void RemoveItem(UInventoryDataItems* ItemData, int Amount = 1);
+protected:
+	virtual void BeginPlay() override;
+	static EItemType GetItemType(EItemType ItemType);
 
 	int ID;
 	int Quantity;
@@ -97,6 +97,10 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true"))
 	TMap<UClass*, AItem*> InstanciatedItems;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
+	TSubclassOf<AGameNotificationManager> GameNotificationManagerClass;
+	AGameNotificationManager* GameNotificationManager;
 	
 	bool IsOpen = false;
 	bool IsFirstDoubleClick = true;
