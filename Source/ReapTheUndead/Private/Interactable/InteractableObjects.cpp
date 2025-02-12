@@ -30,10 +30,7 @@ void AInteractableObjects::BeginPlay()
 	PlayerController = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 }
 
-void AInteractableObjects::InteractObject()
-{
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("print"));
-}
+void AInteractableObjects::InteractObject() {}
 
 void AInteractableObjects::InteractFunction()
 {
