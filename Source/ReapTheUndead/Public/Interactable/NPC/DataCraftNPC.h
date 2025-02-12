@@ -4,6 +4,7 @@
 #include "Engine/DataAsset.h"
 #include "DataCraftNPC.generated.h"
 
+class UInventoryDataItems;
 class AItem;
 
 /**
@@ -16,16 +17,13 @@ class REAPTHEUNDEAD_API UDataCraftNPC : public UDataAsset
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	int ID;
+	int AmountToAdd;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	int Quantity;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	UTexture* Image;
+	TArray<UInventoryDataItems*> Datas;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	UClass* ItemClass;
+	UInventoryDataItems* RewardItem;
 };
 
 

@@ -53,6 +53,8 @@ public:
 	void AddItem(UInventoryDataItems* ItemData, int Amount = 1);
 	UFUNCTION(BlueprintCallable, Category = "Custom Function")
 	void RemoveItem(UInventoryDataItems* ItemData, int Amount = 1);
+
+	TArray<UInventoryDataItems*> GetDataAssets();
 protected:
 	virtual void BeginPlay() override;
 	static EItemType GetItemType(EItemType ItemType);
