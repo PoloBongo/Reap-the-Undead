@@ -39,14 +39,17 @@ protected:
 	class UUserWidget* UIUserInteract;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI Interact", meta = (AllowPrivateAccess = "true"))
+	class UUserWidget* UIHarvest;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI Interact", meta = (AllowPrivateAccess = "true"))
 	class UWidgetComponent* UIUserInteractComponent;
 
 	APawn* PlayerController;
-private:
-	bool isPlayerTrigger = false;
 
 	UPROPERTY(visibleAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* Objectmesh;
+private:
+	bool isPlayerTrigger = false;
 
 	UPROPERTY(visibleAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UBoxComponent* BoxComponent;
