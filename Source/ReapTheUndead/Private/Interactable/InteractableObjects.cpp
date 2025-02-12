@@ -7,7 +7,7 @@
 
 AInteractableObjects::AInteractableObjects()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 	
 	Objectmesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	RootComponent = Objectmesh;
@@ -33,12 +33,6 @@ void AInteractableObjects::BeginPlay()
 void AInteractableObjects::InteractObject()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("print"));
-}
-
-
-void AInteractableObjects::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }
 
 void AInteractableObjects::InteractFunction()

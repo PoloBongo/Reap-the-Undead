@@ -19,7 +19,6 @@ class REAPTHEUNDEAD_API AInteractableObjects : public AActor
 public:	
 	AInteractableObjects();
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent);
-	virtual void Tick(float DeltaTime) override;
 
 	virtual void InteractFunction();
 protected:
