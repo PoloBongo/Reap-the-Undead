@@ -142,9 +142,6 @@ void AInventorySystem::LoadInventory()
 
                         ItemImageButton->SetStyle(ButtonStyle);
                         ItemImageButton->SetVisibility(ESlateVisibility::Visible);
-                    	
-                    	UE_LOG(LogTemp, Warning, TEXT("data assets %d"), DataAssets.Num());
-                    	UE_LOG(LogTemp, Warning, TEXT("i %d"), i);
                     }
                 }
             }
@@ -184,6 +181,7 @@ void AInventorySystem::RemoveItem(UInventoryDataItems* ItemData, int Amount)
 
     LoadInventory();
 }
+
 
 void AInventorySystem::Tick(float DeltaTime)
 {
@@ -304,4 +302,9 @@ UClass* AInventorySystem::FoundClassInSlot(int32 Index)
 void AInventorySystem::GetSlotsMainInventory(TArray<USlotButtonInventory*> Slots)
 {
 	ImagesButtonsInventory = Slots;
+}
+
+TArray<UInventoryDataItems*> AInventorySystem::GetDataAssets()
+{
+	return DataAssets;
 }
