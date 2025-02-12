@@ -25,7 +25,7 @@ protected:
 	UUserWidget* ProgressBar;
 
 	UFUNCTION(BlueprintCallable, Category="Custom")
-	void TakeDamage(float dammage);
+	void TakeDamage(float dammage, AActor* ActorHit);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="UI", meta=(AllowPrivateAccess="true"))
 	int Health;

@@ -3,6 +3,8 @@
 
 #include "Enemy/HealthComponent.h"
 
+#include "GameFramework/Character.h"
+
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
 {
@@ -23,10 +25,9 @@ void UHealthComponent::BeginPlay()
 	
 }
 
-void UHealthComponent::TakeDamage(float dammage)
+void UHealthComponent::TakeDamage(float dammage, AActor* ActorHit)
 {
 	if (!ProgressBar) return;
-
 	Health -= dammage;
 }
 
