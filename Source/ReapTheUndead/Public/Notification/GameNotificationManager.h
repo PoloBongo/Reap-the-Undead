@@ -26,6 +26,8 @@ class REAPTHEUNDEAD_API AGameNotificationManager : public AActor
 public:	
 	AGameNotificationManager();
 
+static AGameNotificationManager* GetInstance(UWorld* World);
+
 	void SetTextNotification(FString NewNotification, FColor Color);
 	void ShowNotification(const FNotification& NewNotification);
 	FString GetTextNotification();
@@ -48,4 +50,6 @@ private:
 	
 	void HiddeNotification();
 	void ProcessNextNotification();
+
+	static AGameNotificationManager* Instance;
 };

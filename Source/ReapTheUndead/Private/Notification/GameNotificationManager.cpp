@@ -2,6 +2,21 @@
 
 #include "Blueprint/UserWidget.h"
 
+AGameNotificationManager* AGameNotificationManager::Instance = nullptr;
+
+AGameNotificationManager* AGameNotificationManager::GetInstance(UWorld* World)
+{
+	if (!Instance)
+	{
+		if (World)
+		{
+			Instance = World->SpawnActor<AGameNotificationManager>(AGameNotificationManager::StaticClass());
+		}
+	}
+
+	return Instance;
+}
+
 AGameNotificationManager::AGameNotificationManager(): NotificationWidget(nullptr), NotificationDuration(0)
 {
 	PrimaryActorTick.bCanEverTick = true;

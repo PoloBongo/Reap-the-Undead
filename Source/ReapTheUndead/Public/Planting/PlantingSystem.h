@@ -4,6 +4,8 @@
 #include "GameFramework/Actor.h"
 #include "PlantingSystem.generated.h"
 
+class UWidgetComponent;
+class UInventoryDataItems;
 class UNiagaraComponent;
 class UNiagaraSystem;
 
@@ -14,7 +16,11 @@ class REAPTHEUNDEAD_API APlantingSystem : public AActor
 	
 public:	
 	APlantingSystem();
-	virtual void Tick(float DeltaTime) override;
+	void HarvestPlant();
+
+	void SetDataAsset(UInventoryDataItems* DataAsset);
+	bool GetCanHarvest() const;
+	UWidgetComponent* GetWidgetComponent() const;
 
 protected:
 	virtual void BeginPlay() override;
@@ -28,6 +34,11 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Plants Mesh", meta=(AllowPrivateAccess="true"))
 	TArray<UStaticMesh*> PlantsMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="UI Interact", meta=(AllowPrivateAccess="true"))
+	UWidgetComponent* HarvestWidget;
+
+	UInventoryDataItems* DataItems;
 	
 	FTimerHandle PlantingRateTimerHandle;
 	FTimerHandle ShowPlantingRateTimerHandle;
@@ -38,6 +49,9 @@ private:
 	UPROPERTY(EditAnywhere, Category="Plant")
 	float DelayShowPlant = 1.f;
 
+	UPROPERTY(EditAnywhere, Category="UI")
+	float AddingZOnWidgetHarvest = 100.f;
+
 	UPROPERTY(EditAnywhere, Category="Plant")
 	int IndexActualMesh = 0;
 
@@ -45,4 +59,7 @@ private:
 	UNiagaraSystem* EvolutionEffect;
 
 	void OnNiagaraFinished();
+	void ShowHarvestPlant();
+
+	bool CanHarvest = false;
 };

@@ -4,6 +4,7 @@
 #include "Planting/PlantManager.h"
 #include "Plants.generated.h"
 
+class UInventoryDataItems;
 /**
  * 
  */
@@ -20,7 +21,20 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI Interact", meta = (AllowPrivateAccess = "true"))
 	bool IsAlreadyPlanted = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI Interact", meta = (AllowPrivateAccess = "true"))
+	UWidgetComponent* HarvestWidget;
+
 private:
 	APlantingSystem* PlantingSystem;
 	UStaticMeshComponent* ActualEvolveMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="UI Interact", meta=(AllowPrivateAccess="true"))
+	UInventoryDataItems* DataItems;
+
+	UFUNCTION(BlueprintCallable)
+	bool GetCanHarvestFromPlantingSystem() const;
+
+	UFUNCTION(BlueprintCallable)
+	UWidgetComponent* GetUWidgetComponentFromPlantingSystem() const;
 };

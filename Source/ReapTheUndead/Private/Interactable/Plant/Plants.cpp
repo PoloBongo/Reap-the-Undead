@@ -1,25 +1,34 @@
 #include "Interactable/Plant/Plants.h"
 
 #include "Blueprint/UserWidget.h"
+#include "Components/WidgetComponent.h"
 #include "Planting/PlantingSystem.h"
 #include "Engine/TargetPoint.h"
 
 void APlants::InteractObject()
 {
-	if (IsAlreadyPlanted) return;
 	
 	Super::InteractObject();
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("print plant01"));
-	if (PlantingSystemClass && LocationSpawnObject)
+	if (PlantingSystem)
 	{
-		FVector SpawnLocation = LocationSpawnObject->GetActorLocation();
-		FRotator SpawnRotation = LocationSpawnObject->GetActorRotation();
-
-		PlantingSystem = GetWorld()->SpawnActor<APlantingSystem>(PlantingSystemClass, SpawnLocation, SpawnRotation);
+		PlantingSystem->SetDataAsset(DataItems);
+		PlantingSystem->HarvestPlant();
 	}
+	else
+	{
+		if (IsAlreadyPlanted) return;
 
-	IsAlreadyPlanted = true;
-	if(UIUserInteract && IsAlreadyPlanted) UIUserInteract->SetVisibility(ESlateVisibility::Hidden);
+		if (PlantingSystemClass && LocationSpawnObject)
+		{
+			FVector SpawnLocation = LocationSpawnObject->GetActorLocation();
+			FRotator SpawnRotation = LocationSpawnObject->GetActorRotation();
+
+			PlantingSystem = GetWorld()->SpawnActor<APlantingSystem>(PlantingSystemClass, SpawnLocation, SpawnRotation);
+		}
+
+		IsAlreadyPlanted = true;
+		if(UIUserInteract && IsAlreadyPlanted) UIUserInteract->SetVisibility(ESlateVisibility::Hidden);	
+	}
 }
 
 void APlants::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -50,4 +59,22 @@ void APlants::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 	{
 		ActualEvolveMesh->SetOverlayMaterial(nullptr);
 	}
+}
+
+bool APlants::GetCanHarvestFromPlantingSystem() const
+{
+	if (PlantingSystem)
+	{
+		return PlantingSystem->GetCanHarvest();
+	}
+	return false;
+}
+
+UWidgetComponent* APlants::GetUWidgetComponentFromPlantingSystem() const
+{
+	if (PlantingSystem)
+	{
+		return PlantingSystem->GetWidgetComponent();
+	}
+	return nullptr;
 }

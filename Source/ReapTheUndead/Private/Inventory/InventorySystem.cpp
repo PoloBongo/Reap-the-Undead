@@ -199,12 +199,14 @@ void AInventorySystem::InteractInventory()
 	if (IsOpen)
 	{
 		PlayerController->SetInputMode(FInputModeGameOnly());
+		PlayerController->SetIgnoreMoveInput(false);
 		InventoryBorder->SetVisibility(ESlateVisibility::Hidden);
 		ImageBtnCloseInventory->SetVisibility(ESlateVisibility::Hidden);
 	}
 	else
 	{
 		PlayerController->SetInputMode(FInputModeGameAndUI());
+		PlayerController->SetIgnoreMoveInput(true);
 		InventoryBorder->SetVisibility(ESlateVisibility::Visible);
 		ImageBtnCloseInventory->SetVisibility(ESlateVisibility::Visible);
 		IsFirstDoubleClick = true;
