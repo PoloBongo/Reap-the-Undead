@@ -1,7 +1,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
 #include "GameFramework/Actor.h"
 #include "InventorySystem.generated.h"
 
@@ -15,6 +14,7 @@ class UImage;
 class UBorder;
 class UButton;
 class UHorizontalBox;
+class UTextBlock;
 
 UENUM()
 enum EItemType
@@ -103,7 +103,9 @@ private:
 	TMap<UClass*, AItem*> InstanciatedItems;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
-	TSubclassOf<AGameNotificationManager> GameNotificationManagerClass;
+	UTextBlock* CountSlotVariable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
 	AGameNotificationManager* GameNotificationManager;
 	
 	bool IsOpen = false;
@@ -139,4 +141,7 @@ private:
 
 	FString SaveDirectory = FPaths::ProjectDir();
 	FString SaveFilePath = SaveDirectory / TEXT("SaveData.json");
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
+	FString CountSlot;
 };
