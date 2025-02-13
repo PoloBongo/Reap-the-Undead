@@ -12,6 +12,9 @@ AInteractableObjects::AInteractableObjects()
 	Objectmesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	RootComponent = Objectmesh;
 
+	TargetPoint = CreateDefaultSubobject<USceneComponent>(TEXT("Spawn Plant"));
+	TargetPoint->SetupAttachment(Objectmesh);
+
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxTrigger"));
 	BoxComponent->SetupAttachment(Objectmesh);
 	

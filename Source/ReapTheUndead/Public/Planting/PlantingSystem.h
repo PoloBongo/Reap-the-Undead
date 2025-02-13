@@ -4,6 +4,7 @@
 #include "GameFramework/Actor.h"
 #include "PlantingSystem.generated.h"
 
+class APlants;
 class UWidgetComponent;
 class UInventoryDataItems;
 class UNiagaraComponent;
@@ -19,9 +20,7 @@ public:
 	void HarvestPlant();
 
 	void SetDataAsset(UInventoryDataItems* DataAsset);
-	bool GetCanHarvest() const;
-	UWidgetComponent* GetWidgetComponent() const;
-
+	void SetAssociatePlant(APlants* Plant);
 protected:
 	virtual void BeginPlay() override;
 	void StartPlanting();
@@ -35,8 +34,8 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Plants Mesh", meta=(AllowPrivateAccess="true"))
 	TArray<UStaticMesh*> PlantsMesh;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="UI Interact", meta=(AllowPrivateAccess="true"))
-	UWidgetComponent* HarvestWidget;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Plants Mesh", meta=(AllowPrivateAccess="true"))
+	APlants* AssociatePlant;
 
 	UInventoryDataItems* DataItems;
 	
@@ -60,6 +59,4 @@ private:
 
 	void OnNiagaraFinished();
 	void ShowHarvestPlant();
-
-	bool CanHarvest = false;
 };
