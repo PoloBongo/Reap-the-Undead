@@ -10,10 +10,10 @@ struct FNotification
 	GENERATED_BODY()
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FString Message;  // Le message de la notification
+	FString Message; 
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FLinearColor Color;  // La couleur de la notification
+	FLinearColor Color;
 
 	FNotification() : Message(TEXT("Default Message")), Color(FLinearColor::White) {}
 };

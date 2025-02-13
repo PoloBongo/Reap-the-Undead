@@ -4,6 +4,7 @@
 #include "Components/Border.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
+#include "Components/TextBlock.h"
 #include "Components/WrapBox.h"
 #include "Inventory/Item.h"
 #include "Inventory/SlotButtonInventory.h"
@@ -14,7 +15,8 @@ AInventorySystem::AInventorySystem(): ID(0), Quantity(0), Image(nullptr), SlotsU
                                       InventoryWidget(nullptr),
                                       InventoryWrapBox(nullptr),
                                       ImageBtnCloseInventory(nullptr),
-                                      InventoryBorder(nullptr), GameNotificationManager(nullptr), StockIndexSelected(0),
+                                      InventoryBorder(nullptr), CountSlotVariable(nullptr),
+                                      GameNotificationManager(nullptr), StockIndexSelected(0),
                                       TotalUsedSlots(0)
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -23,13 +25,6 @@ AInventorySystem::AInventorySystem(): ID(0), Quantity(0), Image(nullptr), SlotsU
 void AInventorySystem::BeginPlay()
 {
 	Super::BeginPlay();
-	FVector SpawnLocation(0.f, 0.f, 0.f);
-	FRotator SpawnRotation(0.f, 0.f, 0.f);
-
-	
-	GameNotificationManager = GetWorld()->SpawnActor<AGameNotificationManager>(GameNotificationManagerClass, SpawnLocation, SpawnRotation);
-
-	if (!GameNotificationManagerClass) return;
 	if (!InventoryWidget) return;
 	InventoryWidget->AddToViewport();
 
@@ -38,6 +33,7 @@ void AInventorySystem::BeginPlay()
 
 void AInventorySystem::OnButtonDoubleClicked(int32 ButtonIndex)
 {
+	bool FoundDoubleItem = false;
     UInventoryDataItems* SaveActualAssetData = nullptr;
     static float LastClickTime = 0.0f;
     const float CurrentTime = GetWorld()->GetTimeSeconds();
@@ -79,7 +75,18 @@ void AInventorySystem::OnButtonDoubleClicked(int32 ButtonIndex)
                     SaveActualAssetData->Quantity++;
                     SaveActualAssetData->InMainInventory = true;
                     SaveActualAssetData->UsedSlotMainInventory = TotalUsedSlots;
-                	DataAssets.Add(SaveActualAssetData);
+
+                	UInventoryDataItems* FoundAllDataAsset = nullptr;
+                	for (UInventoryDataItems* DataAsset : DataAssets)
+                	{
+                		if (DataAsset && SaveActualAssetData)
+                		{
+                			FoundDoubleItem = true;
+                			break;
+                		}
+                	}
+                	
+                	if (!FoundDoubleItem) DataAssets.Add(SaveActualAssetData);
 
                     GameNotificationManager->SetTextNotification(FString::Printf(TEXT("%s a bien été supprimé du raccourcie %d"), *SaveActualAssetData->Image->GetName(), ButtonIndex), FColor::Green);
                     LoadInventory();
@@ -169,6 +176,7 @@ void AInventorySystem::LoadInventory()
 		}
 	}
 	SlotsUsedMainInvetory = TotalUsedSlots;
+	CountSlot = FString::Printf(TEXT("%d/%d"), TotalUsedSlots, ImagesButtonsInventory.Num());
 }
 
 void AInventorySystem::AddItem(UInventoryDataItems* ItemData, int Amount)
@@ -216,6 +224,7 @@ void AInventorySystem::InteractInventory()
 		PlayerController->SetIgnoreMoveInput(false);
 		InventoryBorder->SetVisibility(ESlateVisibility::Hidden);
 		ImageBtnCloseInventory->SetVisibility(ESlateVisibility::Hidden);
+		CountSlotVariable->SetVisibility(ESlateVisibility::Hidden);
 	}
 	else
 	{
@@ -223,6 +232,7 @@ void AInventorySystem::InteractInventory()
 		PlayerController->SetIgnoreMoveInput(true);
 		InventoryBorder->SetVisibility(ESlateVisibility::Visible);
 		ImageBtnCloseInventory->SetVisibility(ESlateVisibility::Visible);
+		CountSlotVariable->SetVisibility(ESlateVisibility::Visible);
 		IsFirstDoubleClick = true;
 	}
 	PlayerController->SetShowMouseCursor(!IsOpen);
@@ -316,11 +326,7 @@ void AInventorySystem::ShowItemsInInventorySlot(int Index)
 
 void AInventorySystem::ShowItemsInInventorySlot2(int Index, int Index2)
 {
-	if (InventorySlots.Find(Index))
-	{
-		GameNotificationManager->SetTextNotification(FString::Printf(TEXT("Impossible de mettre %s dans le raccourcie %d car il y a déjà un item"), *DataAssets[Index2]->Image->GetName(), Index2), FColor::Red);
-	}
-	else
+	if (!InventorySlots.Find(Index))
 	{
 		InventorySlots.Add(Index, DataAssets[Index2]->ItemClass);
 		DataAssets[Index2]->InMainInventory = false;
@@ -340,9 +346,6 @@ void AInventorySystem::ShowItemsInInventorySlot2(int Index, int Index2)
 
 		ButtonsSlots[Index]->SetStyle(ButtonStyle);
 		ItemSelected = false;
-
-		GameNotificationManager->SetTextNotification(FString::Printf(TEXT("%s est maintenant sur le raccourcie %d"), *DataAssets[Index2]->Image->GetName(), Index2), FColor::Green);
-		DataAssets.RemoveAt(Index2);
 	}
 }
 
@@ -420,47 +423,35 @@ void AInventorySystem::LoadInventoryFromFile()
 
                     int32 ItemID = JsonObject->GetNumberField(TEXT("ID"));
 
-                    UInventoryDataItems* FoundDataAsset = nullptr;
+                    UInventoryDataItems* FoundAllDataAsset = nullptr;
                     for (UInventoryDataItems* DataAsset : AllDataAssets)
                     {
                         if (DataAsset && DataAsset->ID == ItemID)
                         {
-                            FoundDataAsset = DataAsset;
+                            FoundAllDataAsset = DataAsset;
                             break;
                         }
                     }
 
-                    if (FoundDataAsset)
+                    if (FoundAllDataAsset)
                     {
-                        FoundDataAsset->Quantity = JsonObject->GetNumberField(TEXT("Quantity"));
-                        FoundDataAsset->UsedSlotMainInventory = JsonObject->GetNumberField(TEXT("UsedSlotMainInventory"));
-                        FoundDataAsset->UsedSlot = JsonObject->GetNumberField(TEXT("UsedSlot"));
-                        FoundDataAsset->InMainInventory = JsonObject->GetBoolField(TEXT("InMainInventory"));
-                        FoundDataAsset->InInventory = JsonObject->GetBoolField(TEXT("InInventory"));
-                        FoundDataAsset->StockIDInSlot = JsonObject->GetNumberField(TEXT("StockIDInSlot"));
+                        FoundAllDataAsset->Quantity = JsonObject->GetNumberField(TEXT("Quantity"));
+                        FoundAllDataAsset->UsedSlotMainInventory = JsonObject->GetNumberField(TEXT("UsedSlotMainInventory"));
+                        FoundAllDataAsset->UsedSlot = JsonObject->GetNumberField(TEXT("UsedSlot"));
+                        FoundAllDataAsset->InMainInventory = JsonObject->GetBoolField(TEXT("InMainInventory"));
+                        FoundAllDataAsset->InInventory = JsonObject->GetBoolField(TEXT("InInventory"));
+                        FoundAllDataAsset->StockIDInSlot = JsonObject->GetNumberField(TEXT("StockIDInSlot"));
 
-                    	DataAssets.Add(FoundDataAsset);
-                        if (!FoundDataAsset->InMainInventory)
+                    	DataAssets.Add(FoundAllDataAsset);
+                        if (!FoundAllDataAsset->InMainInventory)
                         {
-                            ShowItemsInInventorySlot2(FoundDataAsset->UsedSlot, FoundDataAsset->StockIDInSlot);
+                            ShowItemsInInventorySlot2(FoundAllDataAsset->UsedSlot, FoundAllDataAsset->StockIDInSlot);
                         }
                     }
-                    else
-                    {
-                        UE_LOG(LogTemp, Warning, TEXT("Aucun DataAsset trouvé pour l'ItemID %d !"), ItemID);
-                    }
                 }
-            }
-            else
-            {
-                UE_LOG(LogTemp, Warning, TEXT("Le fichier de sauvegarde est vide."));
             }
 
         	LoadInventory();
         }
-    }
-    else
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Échec du chargement du fichier de sauvegarde."));
     }
 }
