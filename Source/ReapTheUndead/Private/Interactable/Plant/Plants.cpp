@@ -1,13 +1,10 @@
 #include "Interactable/Plant/Plants.h"
 
 #include "Blueprint/UserWidget.h"
-#include "Components/WidgetComponent.h"
 #include "Planting/PlantingSystem.h"
-#include "Engine/TargetPoint.h"
 
 void APlants::InteractObject()
 {
-	
 	Super::InteractObject();
 	if (PlantingSystem)
 	{
@@ -18,12 +15,14 @@ void APlants::InteractObject()
 	{
 		if (IsAlreadyPlanted) return;
 
-		if (PlantingSystemClass && LocationSpawnObject)
+		if (PlantingSystemClass && TargetPoint)
 		{
-			FVector SpawnLocation = LocationSpawnObject->GetActorLocation();
-			FRotator SpawnRotation = LocationSpawnObject->GetActorRotation();
+			FVector SpawnLocation = TargetPoint->GetComponentLocation();
+			FRotator SpawnRotation = TargetPoint->GetComponentRotation();
 
 			PlantingSystem = GetWorld()->SpawnActor<APlantingSystem>(PlantingSystemClass, SpawnLocation, SpawnRotation);
+
+			PlantingSystem->SetAssociatePlant(this);
 		}
 
 		IsAlreadyPlanted = true;
@@ -61,20 +60,25 @@ void APlants::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 	}
 }
 
-bool APlants::GetCanHarvestFromPlantingSystem() const
+void APlants::ChangeText(const FString& NewText)
 {
-	if (PlantingSystem)
-	{
-		return PlantingSystem->GetCanHarvest();
-	}
-	return false;
+	UIUserInteract->SetVisibility(ESlateVisibility::Visible);
+	OnTextChanged.Broadcast(NewText);
 }
 
-UWidgetComponent* APlants::GetUWidgetComponentFromPlantingSystem() const
+void APlants::SetCanHarvest(bool Harvest)
 {
-	if (PlantingSystem)
+	CanHarvest = Harvest;
+}
+
+
+void APlants::Destroyed()
+{
+	if (ActualEvolveMesh)
 	{
-		return PlantingSystem->GetWidgetComponent();
+		ActualEvolveMesh->DestroyComponent();
+		ActualEvolveMesh = nullptr;
 	}
-	return nullptr;
+
+	Destroy();
 }

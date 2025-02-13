@@ -19,7 +19,6 @@ class REAPTHEUNDEAD_API AInteractableObjects : public AActor
 public:	
 	AInteractableObjects();
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent);
-	virtual void Tick(float DeltaTime) override;
 
 	virtual void InteractFunction();
 protected:
@@ -38,16 +37,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI Interact", meta = (AllowPrivateAccess = "true"))
 	class UUserWidget* UIUserInteract;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI Interact", meta = (AllowPrivateAccess = "true"))
-	class UUserWidget* UIHarvest;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI Interact", meta = (AllowPrivateAccess = "true"))
-	class UWidgetComponent* UIUserInteractComponent;
-
 	APawn* PlayerController;
 
 	UPROPERTY(visibleAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* Objectmesh;
+
+	UPROPERTY(visibleAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	USceneComponent* TargetPoint;
 private:
 	bool isPlayerTrigger = false;
 

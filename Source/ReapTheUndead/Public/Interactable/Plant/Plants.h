@@ -8,11 +8,17 @@ class UInventoryDataItems;
 /**
  * 
  */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlantOnTextChanged, const FString&, NewText);
 UCLASS()
 class REAPTHEUNDEAD_API APlants : public APlantManager
 {
 	GENERATED_BODY()
-	
+public:
+	UFUNCTION(BlueprintCallable, Category = "Text")
+	void ChangeText(const FString& NewText);
+	void SetCanHarvest(bool Harvest);
+	virtual void Destroyed() override;
+
 protected:
 	virtual void InteractObject() override;
 	
@@ -23,7 +29,10 @@ protected:
 	bool IsAlreadyPlanted = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI Interact", meta = (AllowPrivateAccess = "true"))
-	UWidgetComponent* HarvestWidget;
+	bool CanHarvest = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Property", meta=(AllowPrivateAccess="true"))
+	FString StringPlant;
 
 private:
 	APlantingSystem* PlantingSystem;
@@ -32,9 +41,6 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="UI Interact", meta=(AllowPrivateAccess="true"))
 	UInventoryDataItems* DataItems;
 
-	UFUNCTION(BlueprintCallable)
-	bool GetCanHarvestFromPlantingSystem() const;
-
-	UFUNCTION(BlueprintCallable)
-	UWidgetComponent* GetUWidgetComponentFromPlantingSystem() const;
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FPlantOnTextChanged OnTextChanged;
 };

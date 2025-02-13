@@ -36,53 +36,61 @@ void AInventorySystem::BeginPlay()
 
 void AInventorySystem::OnButtonDoubleClicked(int32 ButtonIndex)
 {
-	UInventoryDataItems* SaveActualAssetData = nullptr;
-	static float LastClickTime = 0.0f;
-	const float CurrentTime = GetWorld()->GetTimeSeconds();
+    UInventoryDataItems* SaveActualAssetData = nullptr;
+    static float LastClickTime = 0.0f;
+    const float CurrentTime = GetWorld()->GetTimeSeconds();
 
-	UButton* Button = ButtonsSlots[ButtonIndex];
-	FButtonStyle ButtonStyle = Button->GetStyle();
+    UButton* Button = ButtonsSlots[ButtonIndex];
+    FButtonStyle ButtonStyle = Button->GetStyle();
 
-	if (CurrentTime - LastClickTime < 0.3f)
-	{
-		if (IsFirstDoubleClick)
-		{
-			IsFirstDoubleClick = false;
-			return;
-		}
+    if (CurrentTime - LastClickTime < 0.3f)
+    {
+        if (IsFirstDoubleClick)
+        {
+            IsFirstDoubleClick = false;
+            return;
+        }
 
-		if (InventorySlots.Find(ButtonIndex))
-		{
-			if (UClass* Found = FoundClassInSlot(ButtonIndex))
-			{
-				for (UInventoryDataItems* DataAsset : DataAssets)
-				{
-					SaveActualAssetData = DataAsset;
-					if (DataAsset->ItemClass->GetFName() == *Found->GetFName().ToString())
-					{
-						break;
-					}
-				}
-				
-				if (DefaultSlotImage.Num() > 0 && Button)
-				{
-					ButtonStyle.Normal.SetResourceObject(DefaultSlotImage[SaveActualAssetData->UsedSlot]);
-					ButtonStyle.Hovered.SetResourceObject(DefaultSlotImage[SaveActualAssetData->UsedSlot]);
-				}
+        if (InventorySlots.Find(ButtonIndex))
+        {
+            if (UClass* Found = FoundClassInSlot(ButtonIndex))
+            {
+                for (UInventoryDataItems* DataAsset : AllDataAssets)
+                {
+                    if (DataAsset->ItemClass == Found)
+                    {
+                        SaveActualAssetData = DataAsset;
+                        break;
+                    }
+                }
 
-				Button->SetStyle(ButtonStyle);
-				InventorySlots.Remove(ButtonIndex);
-				SaveActualAssetData->Quantity++;
-				SaveActualAssetData->InMainInventory = true;
+                if (SaveActualAssetData)
+                {
+                    if (DefaultSlotImage.Num() > 0 && Button)
+                    {
+                        ButtonStyle.Normal.SetResourceObject(DefaultSlotImage[SaveActualAssetData->UsedSlot]);
+                        ButtonStyle.Hovered.SetResourceObject(DefaultSlotImage[SaveActualAssetData->UsedSlot]);
+                    }
 
-				GameNotificationManager->SetTextNotification(FString::Printf(TEXT("%s a bien été supprimé du raccourcie %d"), *SaveActualAssetData->Image->GetName(), SaveActualAssetData->UsedSlot), FColor::Green);
+                    Button->SetStyle(ButtonStyle);
+                    InventorySlots.Remove(ButtonIndex);
+                    SaveActualAssetData->Quantity++;
+                    SaveActualAssetData->InMainInventory = true;
+                    SaveActualAssetData->UsedSlotMainInventory = TotalUsedSlots;
+                	DataAssets.Add(SaveActualAssetData);
 
-				LoadInventory();
-			}
-		}
-	}
+                    GameNotificationManager->SetTextNotification(FString::Printf(TEXT("%s a bien été supprimé du raccourcie %d"), *SaveActualAssetData->Image->GetName(), ButtonIndex), FColor::Green);
+                    LoadInventory();
+                }
+                else
+                {
+                    GameNotificationManager->SetTextNotification(TEXT("L'élément à remettre dans l'inventaire n'a pas été trouvé !"), FColor::Red);
+                }
+            }
+        }
+    }
 
-	LastClickTime = CurrentTime;
+    LastClickTime = CurrentTime;
 }
 
 void AInventorySystem::OnButtonClickedMainSlotInventory(int32 ButtonIndex)
@@ -97,7 +105,6 @@ void AInventorySystem::OnButtonClickedMainSlotInventory(int32 ButtonIndex)
 			break;
 		}
 	}
-	LoadInventory();
 }
 
 void AInventorySystem::LoadInventory()
@@ -113,45 +120,53 @@ void AInventorySystem::LoadInventory()
         }
     }
 
-    int32 Index = 0;
-    for (int32 i = 0; i < DataAssets.Num(); i++)
-    {
-        UInventoryDataItems* Data = DataAssets[i];
-    	Data->UsedSlotMainInventory = i;
-    	
-        if (Data->Quantity > 0 && Index < ImagesButtonsInventory.Num() && Data->InMainInventory)
-        {
-            USlotButtonInventory* ItemImageButton = ImagesButtonsInventory[Index];
-            if (ItemImageButton)
-            {
-                FButtonStyle ButtonStyle = ItemImageButton->GetStyle();
+	int32 Index = 0;
+	TotalUsedSlots = 0;
+	
+	TArray<UInventoryDataItems*> ValidItems;
+	for (UInventoryDataItems* Item : DataAssets)
+	{
+		if (Item->Quantity > 0 && Item->InMainInventory)
+		{
+			ValidItems.Add(Item);
+		}
+	}
 
-                if (UTexture* BaseTexture = Data->Image)
-                {
-                    UTexture2D* ItemTexture2D = Cast<UTexture2D>(BaseTexture);
-                    if (ItemTexture2D)
-                    {
-                        ButtonStyle.Normal.SetResourceObject(ItemTexture2D);
-                        ButtonStyle.Hovered.SetResourceObject(ItemTexture2D);
-                        ButtonStyle.Pressed.SetResourceObject(ItemTexture2D);
+	for (UInventoryDataItems* Data : ValidItems)
+	{
+		if (Index < ImagesButtonsInventory.Num())
+		{
+			USlotButtonInventory* ItemImageButton = ImagesButtonsInventory[Index];
+			if (ItemImageButton)
+			{
+				FButtonStyle ButtonStyle = ItemImageButton->GetStyle();
 
-                        FVector2D ImageSize(100.f, 400.f);
-                        ButtonStyle.Normal.SetImageSize(ImageSize);
-                        ButtonStyle.Hovered.SetImageSize(ImageSize);
-                        ButtonStyle.Pressed.SetImageSize(ImageSize);
+				if (UTexture* BaseTexture = Data->Image)
+				{
+					UTexture2D* ItemTexture2D = Cast<UTexture2D>(BaseTexture);
+					if (ItemTexture2D)
+					{
+						ButtonStyle.Normal.SetResourceObject(ItemTexture2D);
+						ButtonStyle.Hovered.SetResourceObject(ItemTexture2D);
+						ButtonStyle.Pressed.SetResourceObject(ItemTexture2D);
 
-                        ItemImageButton->SetStyle(ButtonStyle);
-                        ItemImageButton->SetVisibility(ESlateVisibility::Visible);
-                    	
-                    	UE_LOG(LogTemp, Warning, TEXT("data assets %d"), DataAssets.Num());
-                    	UE_LOG(LogTemp, Warning, TEXT("i %d"), i);
-                    }
-                }
-            }
-            Index++;
-        	SlotsUsedMainInvetory = DataAssets.Num();
-        }
-    }
+						FVector2D ImageSize(100.f, 400.f);
+						ButtonStyle.Normal.SetImageSize(ImageSize);
+						ButtonStyle.Hovered.SetImageSize(ImageSize);
+						ButtonStyle.Pressed.SetImageSize(ImageSize);
+
+						ItemImageButton->SetStyle(ButtonStyle);
+						ItemImageButton->SetVisibility(ESlateVisibility::Visible);
+					}
+				}
+			}
+
+			Data->UsedSlotMainInventory = Index;
+			Index++;
+			TotalUsedSlots++;
+		}
+	}
+	SlotsUsedMainInvetory = TotalUsedSlots;
 }
 
 void AInventorySystem::AddItem(UInventoryDataItems* ItemData, int Amount)
@@ -184,6 +199,7 @@ void AInventorySystem::RemoveItem(UInventoryDataItems* ItemData, int Amount)
 
     LoadInventory();
 }
+
 
 void AInventorySystem::Tick(float DeltaTime)
 {
@@ -240,6 +256,7 @@ void AInventorySystem::UseSlots(int Index)
 			InventorySlots.Add(Index, DataAssets[StockIndexSelected]->ItemClass);
 			DataAssets[StockIndexSelected]->InMainInventory = false;
 			DataAssets[StockIndexSelected]->UsedSlot = Index;
+			DataAssets[StockIndexSelected]->UsedSlotMainInventory = -1;
 
 			FButtonStyle ButtonStyle = ButtonsSlots[StockIndexSelected]->GetStyle();
 			
@@ -256,7 +273,7 @@ void AInventorySystem::UseSlots(int Index)
 			ItemSelected = false;
 
 			GameNotificationManager->SetTextNotification(FString::Printf(TEXT("%s est maintenant sur le raccourcie %d"), *DataAssets[StockIndexSelected]->Image->GetName(), StockIndexSelected), FColor::Green);
-
+            DataAssets.RemoveAt(StockIndexSelected);
 			LoadInventory();
 		}
 	}
@@ -304,4 +321,9 @@ UClass* AInventorySystem::FoundClassInSlot(int32 Index)
 void AInventorySystem::GetSlotsMainInventory(TArray<USlotButtonInventory*> Slots)
 {
 	ImagesButtonsInventory = Slots;
+}
+
+TArray<UInventoryDataItems*> AInventorySystem::GetDataAssets()
+{
+	return DataAssets;
 }
