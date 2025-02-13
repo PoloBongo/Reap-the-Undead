@@ -1,8 +1,6 @@
 #include "Interactable/InteractableObjects.h"
 
-#include "Blueprint/UserWidget.h"
 #include "Components/BoxComponent.h"
-#include "Components/WidgetComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 AInteractableObjects::AInteractableObjects()
