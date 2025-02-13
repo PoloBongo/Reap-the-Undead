@@ -45,7 +45,6 @@ class REAPTHEUNDEAD_API AInventorySystem : public AActor
 	
 public:	
 	AInventorySystem();
-	virtual void Tick(float DeltaTime) override;
 	void InteractInventory();
 	void UseSlots(int Index);
 
@@ -128,4 +127,16 @@ private:
 
 	UFUNCTION(BlueprintCallable, Category = "Custom Function")
 	void GetSlotsMainInventory(TArray<USlotButtonInventory*> Slots);
+
+	void ShowItemsInInventorySlot(int Index);
+	void ShowItemsInInventorySlot2(int Index, int Index2);
+
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	void SaveInventoryToFile();
+
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	void LoadInventoryFromFile();
+
+	FString SaveDirectory = FPaths::ProjectDir();
+	FString SaveFilePath = SaveDirectory / TEXT("SaveData.json");
 };
