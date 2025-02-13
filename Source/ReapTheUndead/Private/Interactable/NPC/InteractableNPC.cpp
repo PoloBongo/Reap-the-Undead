@@ -31,8 +31,6 @@ void AInteractableNPC::InteractObject()
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("interactable"));
 	
 	UIInteractableNPC->AddToViewport();
-
-	if (Sound) UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, this->GetActorLocation(), GetActorRotation());
 	
 	LoadCraft();
 	SetInputModeNPC();
@@ -56,6 +54,7 @@ void AInteractableNPC::SetInputModeNPC() const
 		PlayerControllerVar->SetInputMode(FInputModeGameAndUI());
 		PlayerControllerVar->SetIgnoreMoveInput(true);
 		CraftBorder->SetVisibility(ESlateVisibility::Visible);
+		if (Sound) UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, this->GetActorLocation(), GetActorRotation());
 	}
 	PlayerControllerVar->SetShowMouseCursor(!IsOpen);
 }

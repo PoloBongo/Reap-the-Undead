@@ -3,6 +3,9 @@
 #include "Chaos/SpatialAccelerationCollection.h"
 #include "ReapTheUndead/ReapTheUndeadCharacter.h"
 
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
+
 AResourcesManager::AResourcesManager()
 {
 	Health = 100;
@@ -13,6 +16,18 @@ AResourcesManager::AResourcesManager()
 void AResourcesManager::TakeDamage(int32 DamageAmount)
 {
 	Health -= DamageAmount;
+	if (DebrisEffect)
+	{
+		FVector location(Objectmesh->GetComponentLocation().X,Objectmesh->GetComponentLocation().Y, Objectmesh->GetComponentLocation().Z + 150 );
+		UNiagaraComponent* NiagaraComp = UNiagaraFunctionLibrary::SpawnSystemAttached(
+			DebrisEffect,
+			Objectmesh,
+			NAME_None,
+			FVector(location),
+			FRotator(0.f),
+			EAttachLocation::Type::KeepWorldPosition,
+			true);
+	}
 	if (Health <= 0)
 	{
 		Harvest();
@@ -28,7 +43,7 @@ void AResourcesManager::Harvest()
 
 void AResourcesManager::InteractObject()
 {
-	TakeDamage(50);
+	TakeDamage(10);
 }
 
 void AResourcesManager::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

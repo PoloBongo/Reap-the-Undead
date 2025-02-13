@@ -1,14 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Interactable/InteractableObjects.h"
 #include "ResourcesManager.generated.h"
 
-/**
- * 
- */
+class UNiagaraSystem;
+
 UCLASS()
 class REAPTHEUNDEAD_API AResourcesManager : public AInteractableObjects
 {
@@ -39,6 +36,9 @@ protected:
 	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* AnyOtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 	virtual void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* AnyOtherComponent, int32 OtherBodyIndex) override;
 
+	UPROPERTY(EditAnywhere, Category = "Niagara")
+	UNiagaraSystem* DebrisEffect;
+	
 private:
 	
 };
