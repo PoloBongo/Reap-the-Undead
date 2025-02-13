@@ -5,6 +5,8 @@
 
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Interactable/Resources/LumberJack.h"
+#include "Kismet/GameplayStatics.h"
 
 AResourcesManager::AResourcesManager()
 {
@@ -43,6 +45,14 @@ void AResourcesManager::Harvest()
 
 void AResourcesManager::InteractObject()
 {
+	if (AxeActor->ResourcesManager->ResourceType == "Wood")
+	{
+		OnPlayAnimationTimber();
+	}
+	if (AxeActor->ResourcesManager->ResourceType == "Rock")
+	{
+		OnPlayAnimationMiner();
+	}
 	TakeDamage(10);
 }
 
@@ -54,6 +64,18 @@ void AResourcesManager::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 	if (AReapTheUndeadCharacter* Player = Cast<AReapTheUndeadCharacter>(OtherActor))
 	{
 		Player->SetInteractableObject(this);
+		if (AxeActor)
+		{
+			AxeActor->ResourcesManager = this;
+		}
+		if (AxeActor->ResourcesManager->ResourceType == "Wood")
+		{
+			CanPlayAnimationTimber = true;
+		}
+		if (AxeActor->ResourcesManager->ResourceType == "Rock")
+		{
+			CanPlayAnimationMiner = true;
+		}
 	}
 }
 
@@ -65,5 +87,20 @@ void AResourcesManager::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, A
 	if (AReapTheUndeadCharacter* Player = Cast<AReapTheUndeadCharacter>(OtherActor))
 	{
 		Player->SetInteractableObject(nullptr);
+		if (AxeActor)
+		{
+			AxeActor->ResourcesManager = nullptr;
+		}
+		CanPlayAnimationTimber = false;
+		CanPlayAnimationMiner = false;
 	}
 }
+
+void AResourcesManager::OnPlayAnimationTimber()
+{
+}
+
+void AResourcesManager::OnPlayAnimationMiner()
+{
+}
+

@@ -4,6 +4,7 @@
 #include "Interactable/InteractableObjects.h"
 #include "ResourcesManager.generated.h"
 
+class ALumberJack;
 class UNiagaraSystem;
 
 UCLASS()
@@ -13,6 +14,12 @@ class REAPTHEUNDEAD_API AResourcesManager : public AInteractableObjects
 
 public:
 	AResourcesManager();
+	
+	UFUNCTION(BlueprintCallable, category = "Events")
+	void OnPlayAnimationTimber();
+
+	UFUNCTION(BlueprintCallable, category = "Events")
+	void OnPlayAnimationMiner();
 
 
 protected:
@@ -38,7 +45,15 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Niagara")
 	UNiagaraSystem* DebrisEffect;
+
+	
 	
 private:
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Property", meta = (AllowPrivateAccess = "true"))
+	ALumberJack* AxeActor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Property", meta = (AllowPrivateAccess = "true"))
+	bool CanPlayAnimationTimber = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Property", meta = (AllowPrivateAccess = "true"))
+	bool CanPlayAnimationMiner = false;
 };
