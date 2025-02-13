@@ -77,6 +77,9 @@ private:
 	TArray<UInventoryDataItems*> DataAssets;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
+	TArray<UInventoryDataItems*> AllDataAssets;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
 	UUserWidget* InventoryWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
@@ -108,6 +111,7 @@ private:
 	bool IsFirstDoubleClick = true;
 	bool ItemSelected = false;
 	int StockIndexSelected;
+	int TotalUsedSlots;
 	
 	UFUNCTION(BlueprintCallable, Category = "Custom Function")
 	void CloseInventory();
