@@ -69,4 +69,7 @@ private:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Property", meta=(AllowPrivateAccess="true"))
 	TArray<UInventoryDataItems*> StocksPlacementItems;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Sound", meta=(AllowPrivateAccess="true"))
+	USoundWave* Sound;
 };
