@@ -22,8 +22,6 @@ void AInteractableNPC::BeginPlay()
 	ArrowRight->OnClicked.AddDynamic(this, &AInteractableNPC::GoRight);
 
 	MaxIndexCraft = CraftAssets.Num() - 1;
-
-	UE_LOG(LogTemp, Warning, TEXT("max assets %d"), MaxIndexCraft);
 }
 
 void AInteractableNPC::InteractObject()

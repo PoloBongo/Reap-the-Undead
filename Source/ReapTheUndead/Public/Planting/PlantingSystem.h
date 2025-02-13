@@ -59,4 +59,6 @@ private:
 
 	void OnNiagaraFinished();
 	void ShowHarvestPlant();
+
+	float TimeRemaining;
 };

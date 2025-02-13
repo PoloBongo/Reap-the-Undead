@@ -58,6 +58,7 @@ void APlantingSystem::SwitchMesh(int _indexMesh)
 		if (_indexMesh + 1 < PlantsMesh.Num())
 		{
 			GetWorldTimerManager().SetTimer(PlantingRateTimerHandle, this, &APlantingSystem::EvolutionPlanting, EvolutionRate[_indexMesh + 1], true);
+			AssociatePlant->ChangeText(FString::Printf(TEXT("Evolution : %d/%d"), IndexActualMesh + 1, PlantsMesh.Num()));
 		}
 		else
 		{

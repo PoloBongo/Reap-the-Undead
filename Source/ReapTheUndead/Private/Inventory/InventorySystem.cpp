@@ -105,7 +105,6 @@ void AInventorySystem::OnButtonClickedMainSlotInventory(int32 ButtonIndex)
 			break;
 		}
 	}
-	LoadInventory();
 }
 
 void AInventorySystem::LoadInventory()
