@@ -53,6 +53,8 @@ public:
 	void AddItem(UInventoryDataItems* ItemData, int Amount = 1);
 	UFUNCTION(BlueprintCallable, Category = "Custom Function")
 	void RemoveItem(UInventoryDataItems* ItemData, int Amount = 1);
+
+	TArray<UInventoryDataItems*> GetDataAssets();
 protected:
 	virtual void BeginPlay() override;
 	static EItemType GetItemType(EItemType ItemType);
@@ -73,6 +75,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
 	TArray<UInventoryDataItems*> DataAssets;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
+	TArray<UInventoryDataItems*> AllDataAssets;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory", meta=(AllowPrivateAccess="true"))
 	UUserWidget* InventoryWidget;
@@ -106,6 +111,7 @@ private:
 	bool IsFirstDoubleClick = true;
 	bool ItemSelected = false;
 	int StockIndexSelected;
+	int TotalUsedSlots;
 	
 	UFUNCTION(BlueprintCallable, Category = "Custom Function")
 	void CloseInventory();

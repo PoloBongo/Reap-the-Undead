@@ -1,16 +1,17 @@
 #include "Interactable/InteractableObjects.h"
 
-#include "Blueprint/UserWidget.h"
 #include "Components/BoxComponent.h"
-#include "Components/WidgetComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 AInteractableObjects::AInteractableObjects()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 	
 	Objectmesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	RootComponent = Objectmesh;
+
+	TargetPoint = CreateDefaultSubobject<USceneComponent>(TEXT("Spawn Plant"));
+	TargetPoint->SetupAttachment(Objectmesh);
 
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxTrigger"));
 	BoxComponent->SetupAttachment(Objectmesh);
@@ -30,16 +31,7 @@ void AInteractableObjects::BeginPlay()
 	PlayerController = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 }
 
-void AInteractableObjects::InteractObject()
-{
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("print"));
-}
-
-
-void AInteractableObjects::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
+void AInteractableObjects::InteractObject() {}
 
 void AInteractableObjects::InteractFunction()
 {

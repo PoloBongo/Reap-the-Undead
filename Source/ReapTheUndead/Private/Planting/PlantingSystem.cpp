@@ -1,8 +1,7 @@
 #include "Planting/PlantingSystem.h"
 #include "TimerManager.h"
 #include "NiagaraFunctionLibrary.h"
-#include "Blueprint/UserWidget.h"
-#include "Components/WidgetComponent.h"
+#include "Interactable/Plant/Plants.h"
 #include "Inventory/InventorySystem.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -17,10 +16,6 @@ APlantingSystem::APlantingSystem()
 void APlantingSystem::BeginPlay()
 {
 	Super::BeginPlay();
-	if (!HarvestWidget) return;
-	FVector SpawnLocation(0, 0, AddingZOnWidgetHarvest);
-	HarvestWidget->AddRelativeLocation(SpawnLocation);
-	HarvestWidget->SetVisibility(false);
 	StartPlanting();
 }
 
@@ -63,6 +58,7 @@ void APlantingSystem::SwitchMesh(int _indexMesh)
 		if (_indexMesh + 1 < PlantsMesh.Num())
 		{
 			GetWorldTimerManager().SetTimer(PlantingRateTimerHandle, this, &APlantingSystem::EvolutionPlanting, EvolutionRate[_indexMesh + 1], true);
+			AssociatePlant->ChangeText(FString::Printf(TEXT("Evolution : %d/%d"), IndexActualMesh + 1, PlantsMesh.Num()));
 		}
 		else
 		{
@@ -86,23 +82,22 @@ void APlantingSystem::OnNiagaraFinished()
 
 void APlantingSystem::ShowHarvestPlant()
 {
-	if (!HarvestWidget) return;
-	HarvestWidget->SetVisibility(true);
-	CanHarvest = true;
+	UE_LOG(LogTemp, Error, TEXT("Y PASSE OU PAS"));
+	AssociatePlant->SetCanHarvest(true);
+	AssociatePlant->ChangeText("Appuyez sur [E] pour recolter la plante");
 }
 
 void APlantingSystem::HarvestPlant()
 {
-	if (!CanHarvest) return;
-	if (!HarvestWidget) return;
-	HarvestWidget->SetVisibility(false);
-
 	if (AInventorySystem* InventorySystem = Cast<AInventorySystem>(UGameplayStatics::GetActorOfClass(GetWorld(), AInventorySystem::StaticClass())))
 	{
 		InventorySystem->AddItem(DataItems, 1);
 		if (this)
 		{
 			Destroy();
+		}
+		if (AssociatePlant) {
+			AssociatePlant->Destroyed();
 		}
 	}
 }
@@ -112,12 +107,7 @@ void APlantingSystem::SetDataAsset(UInventoryDataItems* DataAsset)
 	DataItems = DataAsset;
 }
 
-bool APlantingSystem::GetCanHarvest() const
+void APlantingSystem::SetAssociatePlant(APlants* Plant)
 {
-	return CanHarvest;
-}
-
-UWidgetComponent* APlantingSystem::GetWidgetComponent() const
-{
-	return HarvestWidget;
+	AssociatePlant = Plant;
 }
