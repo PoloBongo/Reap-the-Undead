@@ -4,7 +4,6 @@
 #include "Components/BoxComponent.h"
 #include "Components/PointLightComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "ReapTheUndead/ReapTheUndeadCharacter.h"
 
 APortal::APortal()
 {

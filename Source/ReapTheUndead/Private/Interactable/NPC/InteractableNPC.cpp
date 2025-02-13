@@ -7,6 +7,7 @@
 #include "Interactable/NPC/DataCraftNPC.h"
 #include "Inventory/InventorySystem.h"
 #include "Inventory/DataAsset/InventoryDataItems.h"
+#include "Kismet/GameplayStatics.h"
 #include "ReapTheUndead/ReapTheUndeadCharacter.h"
 
 void AInteractableNPC::BeginPlay()
@@ -30,6 +31,8 @@ void AInteractableNPC::InteractObject()
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("interactable"));
 	
 	UIInteractableNPC->AddToViewport();
+
+	if (Sound) UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, this->GetActorLocation(), GetActorRotation());
 	
 	LoadCraft();
 	SetInputModeNPC();
