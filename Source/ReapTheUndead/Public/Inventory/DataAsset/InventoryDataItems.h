@@ -35,6 +35,12 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	bool InMainInventory = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+	bool InInventory = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+	int StockIDInSlot;
 };
 
 
