@@ -127,6 +127,9 @@ void AReapTheUndeadCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 		EnhancedInputComponent->BindAction(SlotAction3, ETriggerEvent::Started, this, &AReapTheUndeadCharacter::Slot3);
 		EnhancedInputComponent->BindAction(SlotAction4, ETriggerEvent::Started, this, &AReapTheUndeadCharacter::Slot4);
 		EnhancedInputComponent->BindAction(SlotAction5, ETriggerEvent::Started, this, &AReapTheUndeadCharacter::Slot5);
+
+		// Pause
+		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Started, this, &AReapTheUndeadCharacter::PauseMenu);
 	}
 	else
 	{
@@ -187,6 +190,14 @@ void AReapTheUndeadCharacter::Slot5(const FInputActionValue& Value)
 	if (InventorySystem)
 	{
 		InventorySystem->UseSlots(4);
+	}
+}
+
+void AReapTheUndeadCharacter::PauseMenu(const FInputActionValue& Value)
+{
+	if (InventorySystem)
+	{
+		OnPauseMenu.Broadcast();
 	}
 }
 

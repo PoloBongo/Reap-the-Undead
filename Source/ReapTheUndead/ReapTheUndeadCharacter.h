@@ -17,6 +17,7 @@ class UInputMappingContext;
 class UInputAction;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPauseMenu);
 
 UCLASS(config=Game)
 class AReapTheUndeadCharacter : public ACharacter
@@ -68,6 +69,9 @@ class AReapTheUndeadCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* SlotAction5;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* PauseAction;
+
 	UPROPERTY(EditAnywhere, Category="Instance")
 	TSubclassOf<AInteractableObjects> InteractableObjectClass;
 
@@ -79,6 +83,9 @@ class AReapTheUndeadCharacter : public ACharacter
 
 	void InstanceInteractableObject(FActorSpawnParameters SpawnParams);
 	void InstanceInventorySystem(FActorSpawnParameters SpawnParams);
+
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FPauseMenu OnPauseMenu;
 
 public:
 	AReapTheUndeadCharacter();
@@ -101,8 +108,8 @@ protected:
 	void Slot3(const FInputActionValue& Value);
 	void Slot4(const FInputActionValue& Value);
 	void Slot5(const FInputActionValue& Value);
-			
-
+	
+	void PauseMenu(const FInputActionValue& Value);
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

@@ -8,12 +8,14 @@ void APlants::InteractObject()
 	Super::InteractObject();
 	if (PlantingSystem)
 	{
-		PlantingSystem->SetDataAsset(DataItems);
-		PlantingSystem->HarvestPlant();
+		CanDeclenchAnim2 = true;
+		GetWorldTimerManager().SetTimer(PlantingAnimTimerHandle2, this, &APlants::ResetAnimation2, DelayResetAnimation2, false, DelayResetAnimation2);
 	}
 	else
 	{
 		if (IsAlreadyPlanted) return;
+		CanDeclenchAnim = true;
+		GetWorldTimerManager().SetTimer(PlantingAnimTimerHandle, this, &APlants::ResetAnimation, DelayResetAnimation, false, DelayResetAnimation);
 
 		if (PlantingSystemClass && TargetPoint)
 		{
@@ -34,7 +36,6 @@ void APlants::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* O
 	UPrimitiveComponent* AnyOtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	Super::OnBeginOverlap(OverlappedComponent, OtherActor, AnyOtherComponent, OtherBodyIndex, bFromSweep, SweepResult);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("trigger plant01"));
 	
 	if (IsAlreadyPlanted)
 	{
@@ -58,6 +59,18 @@ void APlants::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 	{
 		ActualEvolveMesh->SetOverlayMaterial(nullptr);
 	}
+}
+
+void APlants::ResetAnimation()
+{
+	CanDeclenchAnim = false;
+}
+
+void APlants::ResetAnimation2()
+{
+	CanDeclenchAnim2 = false;
+	PlantingSystem->SetDataAsset(DataItems);
+	PlantingSystem->HarvestPlant();
 }
 
 void APlants::ChangeText(const FString& NewText)

@@ -54,6 +54,7 @@ public:
 	void RemoveItem(UInventoryDataItems* ItemData, int Amount = 1);
 
 	TArray<UInventoryDataItems*> GetDataAssets();
+	TArray<UInventoryDataItems*> GetAllDataAssets();
 	void SaveInventoryToFile();
 	void LoadInventoryFromFile();
 protected:

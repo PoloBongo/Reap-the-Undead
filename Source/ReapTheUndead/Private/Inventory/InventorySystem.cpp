@@ -370,6 +370,11 @@ TArray<UInventoryDataItems*> AInventorySystem::GetDataAssets()
 	return DataAssets;
 }
 
+TArray<UInventoryDataItems*> AInventorySystem::GetAllDataAssets()
+{
+	return AllDataAssets;
+}
+
 void AInventorySystem::SaveInventoryToFile()
 {
 	TArray<TSharedPtr<FJsonValue>> JsonItems;

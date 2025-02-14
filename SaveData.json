@@ -1,45 +1,27 @@
 {
 	"Items": [
 		{
-			"ID": 0,
-			"Quantity": 12,
+			"ID": 2,
+			"Quantity": 2,
+			"UsedSlotMainInventory": -1,
+			"UsedSlot": 0,
+			"InMainInventory": false,
+			"InInventory": true,
+			"StockIDInSlot": 0
+		},
+		{
+			"ID": 5,
+			"Quantity": 9,
 			"UsedSlotMainInventory": 0,
-			"UsedSlot": 3,
+			"UsedSlot": 0,
 			"InMainInventory": true,
 			"InInventory": true,
 			"StockIDInSlot": 0
 		},
 		{
-			"ID": 2,
-			"Quantity": 8,
-			"UsedSlotMainInventory": 1,
-			"UsedSlot": 0,
-			"InMainInventory": true,
-			"InInventory": true,
-			"StockIDInSlot": 1
-		},
-		{
-			"ID": 1,
-			"Quantity": 11,
-			"UsedSlotMainInventory": 2,
-			"UsedSlot": 1,
-			"InMainInventory": true,
-			"InInventory": true,
-			"StockIDInSlot": 2
-		},
-		{
-			"ID": 3,
-			"Quantity": 16,
-			"UsedSlotMainInventory": 3,
-			"UsedSlot": 1,
-			"InMainInventory": true,
-			"InInventory": true,
-			"StockIDInSlot": 2
-		},
-		{
 			"ID": 4,
-			"Quantity": 3,
-			"UsedSlotMainInventory": 4,
+			"Quantity": 6,
+			"UsedSlotMainInventory": 1,
 			"UsedSlot": 1,
 			"InMainInventory": true,
 			"InInventory": true,
