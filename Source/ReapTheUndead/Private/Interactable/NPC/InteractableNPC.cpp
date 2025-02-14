@@ -108,7 +108,7 @@ void AInteractableNPC::CraftingCheck()
 		{
 			InventorySystem->RemoveItem(CraftAssets[IndexCraft]->Datas[i]);
 		}
-		InventorySystem->AddItem(CraftAssets[IndexCraft]->RewardItem);
+		InventorySystem->AddItem(CraftAssets[IndexCraft]->RewardItem, 100);
 		InventorySystem->SaveInventoryToFile();
 		InventorySystem->LoadInventoryFromFile();
 		Notification->SetTextNotification(FString::Printf(TEXT("Tu viens de craft %s"), *CraftAssets[IndexCraft]->RewardItem->GetName()), FColor::Green);

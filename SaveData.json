@@ -1,13 +1,3 @@
 {
-	"Items": [
-		{
-			"ID": 2,
-			"Quantity": 101,
-			"UsedSlotMainInventory": -1,
-			"UsedSlot": 4,
-			"InMainInventory": false,
-			"InInventory": true,
-			"StockIDInSlot": 0
-		}
-	]
+	"Items": []
 }
