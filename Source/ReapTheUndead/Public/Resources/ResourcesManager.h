@@ -4,6 +4,9 @@
 #include "Interactable/InteractableObjects.h"
 #include "ResourcesManager.generated.h"
 
+class UInventoryDataItems;
+class AGameNotificationManager;
+class AInventorySystem;
 class ALumberJack;
 class UNiagaraSystem;
 
@@ -51,6 +54,15 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Property", meta = (AllowPrivateAccess = "true"))
 	ALumberJack* AxeActor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Property", meta = (AllowPrivateAccess = "true"))
+	AInventorySystem* InventorySystem;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Property", meta = (AllowPrivateAccess = "true"))
+	AGameNotificationManager* GameNotificationManager;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Property", meta = (AllowPrivateAccess = "true"))
+	UInventoryDataItems* InventoryDataItems;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Property", meta = (AllowPrivateAccess = "true"))
 	bool CanPlayAnimationTimber = false;

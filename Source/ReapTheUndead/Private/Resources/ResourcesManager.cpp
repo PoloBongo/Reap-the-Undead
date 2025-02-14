@@ -6,7 +6,10 @@
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Interactable/Resources/LumberJack.h"
+#include "Inventory/InventorySystem.h"
+#include "Inventory/DataAsset/InventoryDataItems.h"
 #include "Kismet/GameplayStatics.h"
+#include "Notification/GameNotificationManager.h"
 
 AResourcesManager::AResourcesManager()
 {
@@ -33,6 +36,10 @@ void AResourcesManager::TakeDamage(int32 DamageAmount)
 	if (Health <= 0)
 	{
 		Harvest();
+		InventorySystem->AddItem(InventoryDataItems);
+		InventorySystem->SaveInventoryToFile();
+		InventorySystem->LoadInventoryFromFile();
+		GameNotificationManager->SetTextNotification(FString::Printf(TEXT("Vous venez de récolter un %s"), *InventoryDataItems->Image->GetName()), FColor::Green);
 		Destroy();
 	}
 }
