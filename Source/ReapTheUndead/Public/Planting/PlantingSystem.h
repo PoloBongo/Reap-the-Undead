@@ -4,6 +4,7 @@
 #include "GameFramework/Actor.h"
 #include "PlantingSystem.generated.h"
 
+class AGameNotificationManager;
 class APlants;
 class UWidgetComponent;
 class UInventoryDataItems;
@@ -61,4 +62,7 @@ private:
 	void ShowHarvestPlant();
 
 	float TimeRemaining;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Plants Mesh", meta=(AllowPrivateAccess="true"))
+	AGameNotificationManager* GameNotificationManager;
 };
