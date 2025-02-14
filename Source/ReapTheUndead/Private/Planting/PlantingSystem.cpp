@@ -45,7 +45,6 @@ void APlantingSystem::SwitchMesh(int _indexMesh)
 {
 	if (!PlantsMesh.IsValidIndex(_indexMesh))
 	{
-		UE_LOG(LogTemp, Error, TEXT("Index %d is invalid"), _indexMesh);
 		GetWorld()->GetTimerManager().ClearTimer(PlantingRateTimerHandle);
 		return;
 	}
@@ -88,6 +87,7 @@ void APlantingSystem::ShowHarvestPlant()
 
 void APlantingSystem::HarvestPlant()
 {
+	if (IndexActualMesh < PlantsMesh.Num()) return;
 	if (AInventorySystem* InventorySystem = Cast<AInventorySystem>(UGameplayStatics::GetActorOfClass(GetWorld(), AInventorySystem::StaticClass())))
 	{
 		InventorySystem->AddItem(DataItems, 1);

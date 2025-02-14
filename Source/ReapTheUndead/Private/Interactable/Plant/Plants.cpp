@@ -8,8 +8,8 @@ void APlants::InteractObject()
 	Super::InteractObject();
 	if (PlantingSystem)
 	{
-		CanDeclenchAnim2 = true;
-		GetWorldTimerManager().SetTimer(PlantingAnimTimerHandle2, this, &APlants::ResetAnimation2, DelayResetAnimation2, false, DelayResetAnimation2);
+		PlantingSystem->SetDataAsset(DataItems);
+		PlantingSystem->HarvestPlant();
 	}
 	else
 	{
@@ -66,13 +66,6 @@ void APlants::ResetAnimation()
 	CanDeclenchAnim = false;
 }
 
-void APlants::ResetAnimation2()
-{
-	CanDeclenchAnim2 = false;
-	PlantingSystem->SetDataAsset(DataItems);
-	PlantingSystem->HarvestPlant();
-}
-
 void APlants::ChangeText(const FString& NewText)
 {
 	UIUserInteract->SetVisibility(ESlateVisibility::Visible);
@@ -92,6 +85,5 @@ void APlants::Destroyed()
 		ActualEvolveMesh->DestroyComponent();
 		ActualEvolveMesh = nullptr;
 	}
-
 	Destroy();
 }
