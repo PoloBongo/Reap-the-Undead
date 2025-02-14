@@ -37,11 +37,7 @@ void AResourcesManager::TakeDamage(int32 DamageAmount)
 	}
 }
 
-void AResourcesManager::Harvest()
-{
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, std::to_string(Yield).data());
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, ResourceType.ToString());
-}
+void AResourcesManager::Harvest() {}
 
 void AResourcesManager::InteractObject()
 {

@@ -2,10 +2,11 @@
 
 #include "Inventory/DataAsset/InventoryDataItems.h"
 
-AItem::AItem(): ItemType(Ed_I), ItemUsable(Ed_N), DataAsset(nullptr) {}
+AItem::AItem(): DataAsset(nullptr), ItemType(Ed_I), ItemUsable(Ed_N) {}
 
 void AItem::BeginPlay()
 {
+	Super::BeginPlay();
 	if (DataAsset)
 	{
 		ID = DataAsset->ID;

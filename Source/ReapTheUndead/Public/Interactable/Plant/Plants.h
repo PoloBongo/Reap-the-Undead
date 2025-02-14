@@ -26,6 +26,12 @@ protected:
 	virtual void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* AnyOtherComponent, int32 OtherBodyIndex) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI Interact", meta = (AllowPrivateAccess = "true"))
+	bool CanDeclenchAnim = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI Interact", meta = (AllowPrivateAccess = "true"))
+	bool CanDeclenchAnim2 = false;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI Interact", meta = (AllowPrivateAccess = "true"))
 	bool IsAlreadyPlanted = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI Interact", meta = (AllowPrivateAccess = "true"))
@@ -43,4 +49,16 @@ private:
 
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FPlantOnTextChanged OnTextChanged;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Property", meta=(AllowPrivateAccess="true"))
+	float DelayResetAnimation = 3.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Property", meta=(AllowPrivateAccess="true"))
+    float DelayResetAnimation2 = 3.f;
+	
+	FTimerHandle PlantingAnimTimerHandle;
+	void ResetAnimation();
+
+	FTimerHandle PlantingAnimTimerHandle2;
+	void ResetAnimation2();
 };

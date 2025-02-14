@@ -54,8 +54,10 @@ protected:
 	FString CraftingName = "Crafter";
 private:
 	bool IsOpen = false;
-	int IndexCraft = 0;
 	int MaxIndexCraft;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Property", meta=(AllowPrivateAccess="true"))
+	int IndexCraft = 0;
 
 	void SetInputModeNPC() const;
 

@@ -29,7 +29,6 @@ void AInteractableNPC::BeginPlay()
 void AInteractableNPC::InteractObject()
 {
 	Super::InteractObject();
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("interactable"));
 	
 	UIInteractableNPC->AddToViewport();
 	
@@ -120,7 +119,7 @@ void AInteractableNPC::LoadCraft()
 {
 	StocksPlacementItems.Reset();
 	WrapBox->ClearChildren();
-	if (InventorySystem->GetDataAssets().Num() > 0 && CraftAssets.Num() > 0)
+	if (InventorySystem->GetAllDataAssets().Num() > 0 && CraftAssets.Num() > 0)
 	{
 		for (int i = 0; i < CraftAssets[IndexCraft]->Datas.Num(); i++)
 		{
@@ -156,6 +155,10 @@ void AInteractableNPC::LoadCraft()
 					}
 				}
 			}
+		}
+		if (InventorySystem->GetDataAssets().Num() == 0)
+		{
+			Notification->SetTextNotification("Vous n'avez pas les ingredients pour faire ce craft!", FColor::Red);
 		}
 		CraftingName = TEXT("Crafter ") + CraftAssets[IndexCraft]->RewardItem->GetName();
 	}
