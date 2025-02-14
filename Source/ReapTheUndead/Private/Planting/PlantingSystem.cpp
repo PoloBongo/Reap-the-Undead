@@ -3,7 +3,9 @@
 #include "NiagaraFunctionLibrary.h"
 #include "Interactable/Plant/Plants.h"
 #include "Inventory/InventorySystem.h"
+#include "Inventory/DataAsset/InventoryDataItems.h"
 #include "Kismet/GameplayStatics.h"
+#include "Notification/GameNotificationManager.h"
 
 APlantingSystem::APlantingSystem()
 {
@@ -91,6 +93,7 @@ void APlantingSystem::HarvestPlant()
 	if (AInventorySystem* InventorySystem = Cast<AInventorySystem>(UGameplayStatics::GetActorOfClass(GetWorld(), AInventorySystem::StaticClass())))
 	{
 		InventorySystem->AddItem(DataItems, 1);
+		GameNotificationManager->SetTextNotification(FString::Printf(TEXT("Vous venez de récolter : %s"), *DataItems->Image->GetName()), FColor::Green);
 		InventorySystem->SaveInventoryToFile();
 		InventorySystem->LoadInventoryFromFile();
 		if (this)
