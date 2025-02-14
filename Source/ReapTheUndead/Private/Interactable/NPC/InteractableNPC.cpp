@@ -8,6 +8,7 @@
 #include "Inventory/InventorySystem.h"
 #include "Inventory/DataAsset/InventoryDataItems.h"
 #include "Kismet/GameplayStatics.h"
+#include "Notification/GameNotificationManager.h"
 #include "ReapTheUndead/ReapTheUndeadCharacter.h"
 
 void AInteractableNPC::BeginPlay()
@@ -31,8 +32,6 @@ void AInteractableNPC::InteractObject()
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("interactable"));
 	
 	UIInteractableNPC->AddToViewport();
-
-	if (Sound) UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, this->GetActorLocation(), GetActorRotation());
 	
 	LoadCraft();
 	SetInputModeNPC();
@@ -56,6 +55,7 @@ void AInteractableNPC::SetInputModeNPC() const
 		PlayerControllerVar->SetInputMode(FInputModeGameAndUI());
 		PlayerControllerVar->SetIgnoreMoveInput(true);
 		CraftBorder->SetVisibility(ESlateVisibility::Visible);
+		if (Sound) UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, this->GetActorLocation(), GetActorRotation());
 	}
 	PlayerControllerVar->SetShowMouseCursor(!IsOpen);
 }
@@ -72,8 +72,6 @@ void AInteractableNPC::OnBeginOverlap(
 
 	if (PlayerController != OtherActor) return;
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("OUAIS MANUELO"));
-
 	if (AReapTheUndeadCharacter* Player = Cast<AReapTheUndeadCharacter>(OtherActor))
 	{
 		Player->SetInteractableObject(this);
@@ -87,8 +85,6 @@ void AInteractableNPC::OnEndOverlap(
 	int32 OtherBodyIndex)
 {
 	Super::OnEndOverlap(OverlappedComponent, OtherActor, AnyOtherComponent, OtherBodyIndex);
-
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("DEGAGE BATARD %d"));
 
 	if (AReapTheUndeadCharacter* Player = Cast<AReapTheUndeadCharacter>(OtherActor))
 	{
@@ -114,6 +110,9 @@ void AInteractableNPC::CraftingCheck()
 			InventorySystem->RemoveItem(CraftAssets[IndexCraft]->Datas[i]);
 		}
 		InventorySystem->AddItem(CraftAssets[IndexCraft]->RewardItem);
+		InventorySystem->SaveInventoryToFile();
+		InventorySystem->LoadInventoryFromFile();
+		Notification->SetTextNotification(FString::Printf(TEXT("Tu viens de craft %s"), *CraftAssets[IndexCraft]->RewardItem->GetName()), FColor::Green);
 	}
 }
 
@@ -153,7 +152,7 @@ void AInteractableNPC::LoadCraft()
 					}
 					else
 					{
-						// pas assez d'item
+						Notification->SetTextNotification("Tu n'as pas les items nécessaire dans ton inventaire!", FColor::Red);
 					}
 				}
 			}

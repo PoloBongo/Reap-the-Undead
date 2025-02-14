@@ -3,16 +3,16 @@
 		{
 			"ID": 0,
 			"Quantity": 12,
-			"UsedSlotMainInventory": -1,
+			"UsedSlotMainInventory": 0,
 			"UsedSlot": 3,
-			"InMainInventory": false,
+			"InMainInventory": true,
 			"InInventory": true,
 			"StockIDInSlot": 0
 		},
 		{
 			"ID": 2,
-			"Quantity": 9,
-			"UsedSlotMainInventory": 0,
+			"Quantity": 8,
+			"UsedSlotMainInventory": 1,
 			"UsedSlot": 0,
 			"InMainInventory": true,
 			"InInventory": true,
@@ -20,10 +20,19 @@
 		},
 		{
 			"ID": 1,
-			"Quantity": 9,
-			"UsedSlotMainInventory": -1,
-			"UsedSlot": 2,
-			"InMainInventory": false,
+			"Quantity": 11,
+			"UsedSlotMainInventory": 2,
+			"UsedSlot": 1,
+			"InMainInventory": true,
+			"InInventory": true,
+			"StockIDInSlot": 2
+		},
+		{
+			"ID": 3,
+			"Quantity": 16,
+			"UsedSlotMainInventory": 3,
+			"UsedSlot": 1,
+			"InMainInventory": true,
 			"InInventory": true,
 			"StockIDInSlot": 2
 		}

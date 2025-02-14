@@ -187,8 +187,9 @@ void AInventorySystem::AddItem(UInventoryDataItems* ItemData, int Amount)
     }
     else
     {
-        DataAssets.Add(ItemData);
+    	ItemData->InMainInventory = true;
     	ItemData->UsedSlotMainInventory = SlotsUsedMainInvetory + 1;
+        DataAssets.Add(ItemData);
     }
 
 	ItemData->InInventory = true;
@@ -201,10 +202,10 @@ void AInventorySystem::RemoveItem(UInventoryDataItems* ItemData, int Amount)
     if (DataAssets.Find(ItemData))
     {
         ItemData->Quantity -= Amount;
-		ItemData->InInventory = false;
     	
         if (ItemData->Quantity <= 0)
         {
+        	ItemData->InInventory = false;
             DataAssets.Remove(ItemData);
         	SlotsUsedMainInvetory--;
         }

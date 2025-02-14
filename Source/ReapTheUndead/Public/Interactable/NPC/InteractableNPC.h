@@ -4,6 +4,7 @@
 #include "Interactable/InteractableObjects.h"
 #include "InteractableNPC.generated.h"
 
+class AGameNotificationManager;
 class UBorder;
 class UInventoryDataItems;
 class AInventorySystem;
@@ -72,4 +73,7 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Sound", meta=(AllowPrivateAccess="true"))
 	USoundWave* Sound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Property", meta=(AllowPrivateAccess="true"))
+	AGameNotificationManager* Notification;
 };
