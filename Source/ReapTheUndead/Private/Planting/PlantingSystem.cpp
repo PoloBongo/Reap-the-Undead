@@ -82,7 +82,6 @@ void APlantingSystem::OnNiagaraFinished()
 
 void APlantingSystem::ShowHarvestPlant()
 {
-	UE_LOG(LogTemp, Error, TEXT("Y PASSE OU PAS"));
 	AssociatePlant->SetCanHarvest(true);
 	AssociatePlant->ChangeText("Appuyez sur [E] pour recolter la plante");
 }
@@ -92,6 +91,8 @@ void APlantingSystem::HarvestPlant()
 	if (AInventorySystem* InventorySystem = Cast<AInventorySystem>(UGameplayStatics::GetActorOfClass(GetWorld(), AInventorySystem::StaticClass())))
 	{
 		InventorySystem->AddItem(DataItems, 1);
+		InventorySystem->SaveInventoryToFile();
+		InventorySystem->LoadInventoryFromFile();
 		if (this)
 		{
 			Destroy();

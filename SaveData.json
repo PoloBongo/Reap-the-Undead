@@ -35,6 +35,15 @@
 			"InMainInventory": true,
 			"InInventory": true,
 			"StockIDInSlot": 2
+		},
+		{
+			"ID": 4,
+			"Quantity": 3,
+			"UsedSlotMainInventory": 4,
+			"UsedSlot": 1,
+			"InMainInventory": true,
+			"InInventory": true,
+			"StockIDInSlot": 2
 		}
 	]
 }
