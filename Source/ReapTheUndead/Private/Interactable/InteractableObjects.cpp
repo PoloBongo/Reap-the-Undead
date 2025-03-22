@@ -15,9 +15,12 @@ AInteractableObjects::AInteractableObjects()
 
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxTrigger"));
 	BoxComponent->SetupAttachment(Objectmesh);
-	
-	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AInteractableObjects::OnBeginOverlap);
-	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &AInteractableObjects::OnEndOverlap);
+
+	if (BoxComponent)
+	{
+		BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AInteractableObjects::OnBeginOverlap);
+		BoxComponent->OnComponentEndOverlap.AddDynamic(this, &AInteractableObjects::OnEndOverlap);
+	}
 }
 
 void AInteractableObjects::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -35,7 +38,7 @@ void AInteractableObjects::InteractObject() {}
 
 void AInteractableObjects::InteractFunction()
 {
-	if (isPlayerTrigger)
+	if (IsPlayerTrigger)
 	{
 		InteractObject();
 	}
@@ -50,7 +53,7 @@ void AInteractableObjects::OnBeginOverlap(
 	const FHitResult& SweepResult)
 {
 	if (PlayerController != OtherActor) return;
-	isPlayerTrigger = true;
+	IsPlayerTrigger = true;
 
 	Objectmesh->SetOverlayMaterial(MaterialOverlay);
 }
@@ -61,7 +64,7 @@ void AInteractableObjects::OnEndOverlap(
 	UPrimitiveComponent* AnyOtherComponent,
 	int32 OtherBodyIndex)
 {
-	isPlayerTrigger = false;
+	IsPlayerTrigger = false;
 
 	Objectmesh->SetOverlayMaterial(nullptr);
 }

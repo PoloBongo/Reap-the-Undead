@@ -16,6 +16,9 @@ class REAPTHEUNDEAD_API UInventoryDataItems : public UDataAsset
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+	FString Name;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	int ID;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
@@ -41,6 +44,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	int StockIDInSlot;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+	int DropQuantity;
 };
 
 

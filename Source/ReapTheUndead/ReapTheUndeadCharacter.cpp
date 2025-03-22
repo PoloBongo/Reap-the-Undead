@@ -12,6 +12,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Inventory/InventorySystem.h"
+#include "Player/DetectionDrop.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -59,6 +60,18 @@ AReapTheUndeadCharacter::AReapTheUndeadCharacter()
 void AReapTheUndeadCharacter::SetInteractableObject(AInteractableObjects* _AInteractableObjects)
 {
 	InteractableObject = _AInteractableObjects;
+}
+
+AInteractableObjects* AReapTheUndeadCharacter::GetInteractableObject()
+{
+	return InteractableObject;
+}
+
+ADropItem* AReapTheUndeadCharacter::GetDropItem()
+{
+	UDetectionDrop* DetectionDrop = this->GetComponentByClass<UDetectionDrop>();
+	
+	return DetectionDrop->GetDropItem();
 }
 
 void AReapTheUndeadCharacter::BeginPlay()

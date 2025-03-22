@@ -8,6 +8,7 @@
 #include "Logging/LogMacros.h"
 #include "ReapTheUndeadCharacter.generated.h"
 
+class ADropItem;
 struct FInputActionInstance;
 class AInventorySystem;
 class AInteractableObjects;
@@ -77,6 +78,9 @@ class AReapTheUndeadCharacter : public ACharacter
 
 	UPROPERTY(EditAnywhere, Category="Instance")
 	TSubclassOf<AInventorySystem> InventorySystemClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Instance", meta = (AllowPrivateAccess = "true"))
+	ADropItem* DropItem;
 	
 	AInteractableObjects* InteractableObject;
 	AInventorySystem* InventorySystem;
@@ -91,6 +95,11 @@ public:
 	AReapTheUndeadCharacter();
 
 	void SetInteractableObject(AInteractableObjects* _AInteractableObjects);
+
+	UFUNCTION(BlueprintCallable)
+	AInteractableObjects* GetInteractableObject();
+
+	ADropItem* GetDropItem();
 protected:
 
 	/** Called for movement input */

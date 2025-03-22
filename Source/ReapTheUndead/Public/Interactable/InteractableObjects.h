@@ -44,9 +44,9 @@ protected:
 
 	UPROPERTY(visibleAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	USceneComponent* TargetPoint;
-private:
-	bool isPlayerTrigger = false;
 
 	UPROPERTY(visibleAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UBoxComponent* BoxComponent;
+private:
+	bool IsPlayerTrigger = false;
 };

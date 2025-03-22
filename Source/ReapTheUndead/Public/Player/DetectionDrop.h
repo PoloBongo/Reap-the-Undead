@@ -16,11 +16,11 @@ class REAPTHEUNDEAD_API UDetectionDrop : public UActorComponent
 public:	
 	UDetectionDrop();
 
+	UFUNCTION(BlueprintCallable)
+	void SetDropItem(ADropItem* DropItemRef = nullptr);
+	ADropItem* GetDropItem() const;
 protected:
 	virtual void BeginPlay() override;
 private:
-	UFUNCTION(BlueprintCallable)
-	void SetDropItem(ADropItem* DropItemRef);
-	
 	ADropItem* DropItem;
 };

@@ -14,7 +14,7 @@ class REAPTHEUNDEAD_API USlotButtonInventory : public UButton
 {
 	GENERATED_BODY()
 
-protected:
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Reference", meta=(AllowPrivateAccess="true"))
 	int ButtonId;
 };

@@ -17,3 +17,8 @@ void UDetectionDrop::SetDropItem(ADropItem* DropItemRef)
 {
 	DropItem = DropItemRef;
 }
+
+ADropItem* UDetectionDrop::GetDropItem() const
+{
+	return DropItem;
+}

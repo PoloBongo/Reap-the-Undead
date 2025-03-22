@@ -42,6 +42,11 @@ FString AGameNotificationManager::GetTextNotification()
 
 void AGameNotificationManager::ShowNotification(const FNotification& NewNotification)
 {
+	if (!IsValid(this) || !IsValid(NotificationWidget) || !GetWorld())
+	{
+		return;
+	}
+
 	TextNotification = NewNotification.Message;
 	NotificationWidget->SetColorAndOpacity(NewNotification.Color);
 	NotificationQueue.Enqueue(NewNotification);
