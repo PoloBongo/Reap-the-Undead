@@ -1,9 +1,20 @@
 {
 	"Items": [
 		{
+			"Name": "Fertilizer",
+			"ID": 0,
+			"Quantity": 0,
+			"UsedSlotMainInventory": 0,
+			"UsedSlot": 3,
+			"InMainInventory": true,
+			"InInventory": true,
+			"StockIDInSlot": 0,
+			"DropQuantity": 0
+		},
+		{
 			"Name": "Kamea",
 			"ID": 2,
-			"Quantity": 301,
+			"Quantity": 303,
 			"UsedSlotMainInventory": 0,
 			"UsedSlot": 0,
 			"InMainInventory": true,
@@ -12,11 +23,22 @@
 			"DropQuantity": 0
 		},
 		{
+			"Name": "Water",
+			"ID": 1,
+			"Quantity": 0,
+			"UsedSlotMainInventory": 2,
+			"UsedSlot": 1,
+			"InMainInventory": true,
+			"InInventory": true,
+			"StockIDInSlot": 2,
+			"DropQuantity": 0
+		},
+		{
 			"Name": "Super Plant",
 			"ID": 5,
-			"Quantity": 5,
+			"Quantity": 4,
 			"UsedSlotMainInventory": 1,
-			"UsedSlot": 1,
+			"UsedSlot": 4,
 			"InMainInventory": true,
 			"InInventory": true,
 			"StockIDInSlot": 1,
@@ -25,7 +47,7 @@
 		{
 			"Name": "Small Plant",
 			"ID": 4,
-			"Quantity": 1,
+			"Quantity": 2,
 			"UsedSlotMainInventory": 2,
 			"UsedSlot": 1,
 			"InMainInventory": true,
@@ -38,21 +60,21 @@
 			"ID": 6,
 			"Quantity": 205,
 			"UsedSlotMainInventory": 3,
-			"UsedSlot": 1,
+			"UsedSlot": 0,
 			"InMainInventory": true,
 			"InInventory": true,
-			"StockIDInSlot": 1,
+			"StockIDInSlot": 3,
 			"DropQuantity": 0
 		},
 		{
 			"Name": "Rock",
 			"ID": 7,
-			"Quantity": 98,
+			"Quantity": 96,
 			"UsedSlotMainInventory": 4,
 			"UsedSlot": 1,
 			"InMainInventory": true,
 			"InInventory": true,
-			"StockIDInSlot": 3,
+			"StockIDInSlot": 4,
 			"DropQuantity": 0
 		}
 	]

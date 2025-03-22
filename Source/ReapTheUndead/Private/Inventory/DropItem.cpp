@@ -134,9 +134,12 @@ void ADropItem::OnButtonDoubleClicked(int ButtonIndex)
 			{
 				InventorySystem->AddItem(DropListItem[ButtonIndex], 1);
 
-				if (DropQuantityInstance[SaveActualAssetData] <= 1)
+				if (DropQuantityInstance.Contains(SaveActualAssetData))
 				{
-					DropListItem.Remove(ButtonIndex);
+					if (DropQuantityInstance[SaveActualAssetData] <= 1)
+					{
+						DropListItem.Remove(ButtonIndex);
+					}
 				}
 			}
 
@@ -320,7 +323,7 @@ void ADropItem::TriggerButtonHoveredDelegate(int ButtonID)
 	if (!HoveredWidget) return;
 	HoveredWidget->SetVisibility(ESlateVisibility::Visible);
 	
-	for (UInventoryDataItems* Item : InventorySystem->GetDataAssets())
+	for (UInventoryDataItems* Item : InventorySystem->GetAllDataAssets())
 	{
 		if (Item->ItemClass == DropListItem[ButtonID]->ItemClass)
 		{

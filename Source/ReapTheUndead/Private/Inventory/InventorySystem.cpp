@@ -78,7 +78,8 @@ void AInventorySystem::OnButtonDoubleClicked(int32 ButtonIndex)
                 	DataAssets.Add(SaveActualAssetData);
 
                     GameNotificationManager->SetTextNotification(FString::Printf(TEXT("%s a bien été supprimé du raccourcie %d"), *SaveActualAssetData->Image->GetName(), ButtonIndex), FColor::Green);
-                    LoadInventoryFromFile();
+					SaveInventoryToFile();
+                	LoadInventoryFromFile();
                 }
                 else
                 {
@@ -134,10 +135,10 @@ void AInventorySystem::OnButtonClickedMainSlotInventory(int32 ButtonIndex)
 				}
 				DropItemInstance->AddItemToDrop(DataAssets[i]);
 				UE_LOG(LogTemp, Warning, TEXT("Nom drop : %s"), *DataAssets[i]->GetName());
+				GameNotificationManager->SetTextNotification(FString::Printf(TEXT("Vous avez drop l'item suivant: %s"), *DataAssets[i]->Image->GetName()), FColor::Cyan);
 				LoadInventory();
 				SaveInventoryToFile();
 				LoadInventoryFromFile();
-				//GameNotificationManager->SetTextNotification(FString::Printf(TEXT("Vous avez drop l'item suivant: %s"), *DataAssets[i]->Image->GetName()), FColor::Cyan);
 				break;
 			}
 		}
@@ -258,16 +259,18 @@ void AInventorySystem::AddItem(UInventoryDataItems* ItemData, int Amount)
     if (DataAssets.Find(ItemData) && ItemData->Quantity > 0)
     {
         ItemData->Quantity += Amount;
-    	UE_LOG(LogTemp, Warning, TEXT("la"));
+    	ItemData->InInventory = true;
+
+    	UE_LOG(LogTemp, Warning, TEXT("+1"));
+    	SaveInventoryToFile();
     }
     else
     {
     	LoadInventoryFromFileWithItem(ItemData, Amount);
-    	UE_LOG(LogTemp, Warning, TEXT("ici"));
+    	UE_LOG(LogTemp, Warning, TEXT("new"));
     }
-
+	
 	LoadInventoryFromFile();
-	SaveInventoryToFile();
 }
 
 void AInventorySystem::RemoveItem(UInventoryDataItems* ItemData, int Amount)
@@ -633,7 +636,6 @@ void AInventorySystem::LoadInventoryFromFileWithItem(UInventoryDataItems* ItemDa
                     {
                         FoundAllDataAsset->Quantity += Amount;
                         bItemExists = true;
-                    	UE_LOG(LogTemp, Warning, TEXT("trouvé"));
                     }
                 }
             }
@@ -643,10 +645,9 @@ void AInventorySystem::LoadInventoryFromFileWithItem(UInventoryDataItems* ItemDa
                 ItemData->Quantity = Amount;
                 ItemData->UsedSlotMainInventory = DataAssets.Num();
                 ItemData->InMainInventory = true;
+                ItemData->InInventory = true;
             	
                 DataAssets.Add(ItemData);
-
-            	UE_LOG(LogTemp, Warning, TEXT("pas trouvé"));
             }
             SaveInventoryToFile();
         }

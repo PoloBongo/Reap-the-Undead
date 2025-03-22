@@ -18,9 +18,7 @@ void AItem::UseItem()
 {
 	if (DataAsset->Quantity <= 0) return;
 	DataAsset->Quantity--;
-
-	UE_LOG(LogTemp, Warning, TEXT("ID : %d"), DataAsset->ID);
-	UE_LOG(LogTemp, Warning, TEXT("Type : %d"), ItemType);
-	UE_LOG(LogTemp, Warning, TEXT("Quantity : %d"), DataAsset->Quantity);
-	UE_LOG(LogTemp, Warning, TEXT("Usable : %d"), ItemUsable);
+	
+	FString Message = FString::Printf(TEXT("Item utilisé : %s"), *DataAsset->Name);
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, Message);
 }
